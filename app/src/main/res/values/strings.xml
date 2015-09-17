@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ProCampus</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="button_map_text">MAP</string>
+</resources>
