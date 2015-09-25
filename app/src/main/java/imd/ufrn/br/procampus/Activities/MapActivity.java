@@ -16,6 +16,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -28,7 +30,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final LatLng latLngUFRN = new LatLng(-5.837523, -35.203309);
 
     //Área para posição da camera.
-    private static final LatLngBounds latLngBoundsUFRN = new LatLngBounds(new LatLng(-5.844020, -35.214237), new LatLng(-5.829642, -35.193234));//obs usar um poligono
+    private static final LatLngBounds latLngBoundsUFRN = new LatLngBounds(new LatLng(-5.844020, -35.214237), new LatLng(-5.829642, -35.193234));
+
+    //Poligono para área permitida dos marcadores
+    private static final PolygonOptions areaMarcadoresUFRN = MapActivity.polygonLatLngUFRN();
 
     //Instância do mapa.
     private GoogleMap googleMap;
@@ -40,10 +45,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient;
 
     //Variáveis para o GPS
-    private LocationRequest mLocationRequest;
-    private Location mCurrentLocation;
-    private String mLastUpdateTime;
-    private boolean mRequestingLocationUpdates = false;
+    private LocationRequest locationRequest;
+    private Location minhaLocalizacao;
+    private String tempoUltimoUpdate;
+    private boolean pedindoLocalizacao = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +75,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
+        if (mGoogleApiClient.isConnected() && !pedindoLocalizacao) {
             startLocationUpdates();
         }
     }
@@ -99,12 +104,40 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
             public boolean onMyLocationButtonClick() {
-                googleMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude())));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(minhaLocalizacao.getLatitude(), minhaLocalizacao.getLongitude())));
                 return true;
+            }
+        });
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
             }
         });
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("onConnectionSuspended", "Conexão Suspensa.");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e("onConnectionFailed", "Conexão Falhou!");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        minhaLocalizacao = location;
+        tempoUltimoUpdate = DateFormat.getTimeInstance().format(new Date());
+        Log.d("GPS - onLocationChanged", "Data: " + tempoUltimoUpdate + " Longitude: " + location.getLongitude() + " Latitude: " + location.getLatitude());
+    }
 
     /**
      * @param area
@@ -157,8 +190,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Começa os updates de localização.
      */
     protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        mRequestingLocationUpdates = true;
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
+        pedindoLocalizacao = true;
     }
 
 
@@ -167,38 +200,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        mRequestingLocationUpdates = false;
+        pedindoLocalizacao = false;
     }
 
     /**
      * Cria e configura a chamada de localização do GPS.
      */
     protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        startLocationUpdates();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i("onConnectionSuspended", "Conexão Suspensa.");
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.e("onConnectionFailed", "Conexão Falhou!");
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        Log.d("GPS - onLocationChanged","Data: "+mLastUpdateTime+" Longitude: "+location.getLongitude()+" Latitude: "+location.getLatitude());
+    /**
+     * @return polygon options com as lat e long da UFRN
+     */
+    public static PolygonOptions polygonLatLngUFRN(){
+        return new PolygonOptions().add(
+                new LatLng(-5.829542, -35.211024),
+                new LatLng(-5.322462, -35.203037),
+                new LatLng(-5.836930, -35.197296),
+                new LatLng(-5.840077, -35.195152),
+                new LatLng(-5.842565, -35.195152),
+                new LatLng(-5.844215, -35.196658),
+                new LatLng(-5.843530, -35.202476),
+                new LatLng(-5.837920, -35.205793),
+                new LatLng(-5.838503, -35.210667),
+                new LatLng(-5.833147, -35.212351)
+        );
     }
 }
