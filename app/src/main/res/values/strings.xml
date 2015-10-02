@@ -6,4 +6,8 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="button_map_text">MAP</string>
     <string name="title_activity_criar_pro">CriarProActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="username_text_hint">usuário do sigaa</string>
+    <string name="password_text_hint">senha do sigaa</string>
+    <string name="go_to_map_btn">Ir para o mapa</string>
 </resources>
