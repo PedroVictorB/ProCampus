@@ -1,5 +1,6 @@
 package imd.ufrn.br.procampus.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
@@ -116,11 +117,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
         //Adicionar marcador quando o usúario clica no mapa
-        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
+            public void onMapLongClick(LatLng latLng) {
                 if (PolyUtil.containsLocation(latLng, areaMarcadoresUFRN.getPoints(), true)) {
-                    googleMap.addMarker(new MarkerOptions().title("TESTE").position(latLng));
+                    //googleMap.addMarker(new MarkerOptions().title("TESTE").position(latLng));
+                    Intent i = new Intent(MapActivity.this, CriarProActivity.class);
+                    i.putExtra("position", latLng);
+                    startActivityForResult(i, 1);
                 }
             }
         });
@@ -239,5 +243,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 new LatLng(-5.833147, -35.212351),
                 new LatLng(-5.829542, -35.211024)
         );
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 1){
+            if(resultCode == 1){
+                //update map
+            }
+        }
     }
 }
