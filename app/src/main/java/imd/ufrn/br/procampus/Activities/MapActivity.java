@@ -1,5 +1,6 @@
 package imd.ufrn.br.procampus.Activities;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.maps.android.PolyUtil;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -89,6 +92,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngUFRN, 17));//Posição inicial da camera na UFRN com zoom 17.
 
+        //Desmarcar o comentário abaixo para ver a área que os marcadores podem ser colocados.
+        //googleMap.addPolygon(areaMarcadoresUFRN).setFillColor(Color.BLUE);
+
         //Listener para mudanças de posição da camera.
         googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
@@ -109,10 +115,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
+        //Adicionar marcador quando o usúario clica no mapa
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-
+                if (PolyUtil.containsLocation(latLng, areaMarcadoresUFRN.getPoints(), true)) {
+                    googleMap.addMarker(new MarkerOptions().title("TESTE").position(latLng));
+                }
             }
         });
     }
@@ -136,7 +145,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         minhaLocalizacao = location;
         tempoUltimoUpdate = DateFormat.getTimeInstance().format(new Date());
-        Log.d("GPS - onLocationChanged", "Data: " + tempoUltimoUpdate + " Longitude: " + location.getLongitude() + " Latitude: " + location.getLatitude());
+        //Log.d("GPS - onLocationChanged", "Data: " + tempoUltimoUpdate + " Longitude: " + location.getLongitude() + " Latitude: " + location.getLatitude());
     }
 
     /**
@@ -219,7 +228,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static PolygonOptions polygonLatLngUFRN(){
         return new PolygonOptions().add(
                 new LatLng(-5.829542, -35.211024),
-                new LatLng(-5.322462, -35.203037),
+                new LatLng(-5.832642, -35.203037),
                 new LatLng(-5.836930, -35.197296),
                 new LatLng(-5.840077, -35.195152),
                 new LatLng(-5.842565, -35.195152),
@@ -227,7 +236,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 new LatLng(-5.843530, -35.202476),
                 new LatLng(-5.837920, -35.205793),
                 new LatLng(-5.838503, -35.210667),
-                new LatLng(-5.833147, -35.212351)
+                new LatLng(-5.833147, -35.212351),
+                new LatLng(-5.829542, -35.211024)
         );
     }
 }
