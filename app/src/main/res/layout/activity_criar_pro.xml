@@ -1,137 +1,128 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="imd.ufrn.br.procampus.Activities.CriarProActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTitulo"
-        android:hint="Titulo"
-        android:layout_below="@+id/suaRecView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar">
+    </include>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/editDescricao"
-        android:hint="Descrição do Problema"
-        android:lines="5"
-        android:layout_below="@+id/editTitulo"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Sua Reclamação"
-        android:id="@+id/suaRecView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <HorizontalScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200px"
-        android:id="@+id/scrollableimages"
-        android:layout_below="@+id/autoCompleteTipoView"
-        android:fillViewport="false"
-        android:measureAllChildren="false"
-        android:background="#d4d1d1">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTitulo"
+            android:hint="Titulo" />
 
-        <ImageView
-            android:layout_width="200px"
-            android:layout_height="200px"
-            android:src="@mipmap/ic_launcher"
-            android:scaleType="centerCrop" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:id="@+id/editDescricao"
+            android:hint="Descrição do Problema"
+            android:lines="5"
+            android:layout_marginBottom="20dp"/>
 
-    </HorizontalScrollView>
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollableimages"
+            android:layout_below="@+id/autoCompleteTipoView"
+            android:fillViewport="false"
+            android:measureAllChildren="false"
+            android:background="#d4d1d1"
+            android:layout_marginBottom="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+            <ImageView
+                android:layout_width="200px"
+                android:layout_height="200px"
+                android:src="@mipmap/ic_launcher"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:layout_width="200px"
+                android:layout_height="200px"
+                android:src="@drawable/plus_icon"
+                android:scaleType="centerCrop" />
+            </LinearLayout>
+        </HorizontalScrollView>
 
 
-    <AutoCompleteTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/autoCompleteTipoView"
-        android:hint="Tipo"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/editDescricao"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/autoCompleteTipoView"
+            android:hint="Tipo"
+            android:layout_marginBottom="20dp"/>
 
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/radioGroup"
-        android:layout_below="@+id/scrollableimages"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/radioGroup">
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Prioridade"
+                android:id="@+id/priolabelView"
+                android:layout_alignBaseline="@+id/buttonRegistrar"
+                android:layout_alignBottom="@+id/buttonRegistrar"
+                android:layout_toLeftOf="@+id/buttonRegistrar"
+                android:layout_toStartOf="@+id/buttonRegistrar" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:id="@+id/radioButton"
+                android:checked="false" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:id="@+id/radioButton2"
+                android:checked="false" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:id="@+id/radioButton3"
+                android:checked="false" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4"
+                android:id="@+id/radioButton4"
+                android:checked="false" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:id="@+id/radioButton5"
+                android:checked="false" />
+        </RadioGroup>
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Prioridade"
-            android:id="@+id/priolabelView"
-            android:layout_alignBaseline="@+id/buttonRegistrar"
-            android:layout_alignBottom="@+id/buttonRegistrar"
-            android:layout_toLeftOf="@+id/buttonRegistrar"
-            android:layout_toStartOf="@+id/buttonRegistrar" />
+            android:text="Registrar Reclamação"
+            android:id="@+id/buttonRegistrar"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            android:id="@+id/radioButton"
-            android:checked="false" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2"
-            android:id="@+id/radioButton2"
-            android:checked="false" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3"
-            android:id="@+id/radioButton3"
-            android:checked="false" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4"
-            android:id="@+id/radioButton4"
-            android:checked="false" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5"
-            android:id="@+id/radioButton5"
-            android:checked="false" />
-    </RadioGroup>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Registrar Reclamação"
-        android:id="@+id/buttonRegistrar"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
-</RelativeLayout>
+</LinearLayout>
