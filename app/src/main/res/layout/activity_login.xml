@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#B6B6B6"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"
     android:paddingTop="30dp">
@@ -41,9 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:id="@+id/usernameText"
-            android:hint="@string/username_text_hint"
-            android:textColorHint="#FFFFFF"
-            android:textColor="#FFFFFF"/>
+            android:hint="@string/username_text_hint"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -55,9 +52,7 @@
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/passwordText"
-            android:hint="@string/password_text_hint"
-            android:textColorHint="#FFFFFF"
-            android:textColor="#FFFFFF"/>
+            android:hint="@string/password_text_hint"/>
         </android.support.design.widget.TextInputLayout>
 
         <Button
@@ -66,11 +61,10 @@
             android:text="Entrar"
             android:id="@+id/loginBtn"
             android:layout_marginTop="20dp"
-            android:background="#2196F3"
             android:textColor="#ffffff"
             android:fontFamily="impact"
             android:textStyle="bold"
-            android:textSize="12dp"/>
+            android:textSize="12sp"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -78,12 +72,11 @@
             android:text="@string/go_to_map_btn"
             android:id="@+id/mapBtn"
             android:layout_marginTop="30dp"
-            android:background="#2196F3"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:layout_gravity="center"/>
     </LinearLayout>
 </LinearLayout>
