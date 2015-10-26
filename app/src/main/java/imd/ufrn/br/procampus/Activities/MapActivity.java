@@ -1,5 +1,6 @@
 package imd.ufrn.br.procampus.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
@@ -18,11 +19,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.maps.android.PolyUtil;
 
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -121,11 +124,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onMapLongClick(LatLng latLng) {
                 if (PolyUtil.containsLocation(latLng, areaMarcadoresUFRN.getPoints(), true)) {
-                    //googleMap.addMarker(new MarkerOptions().title("TESTE").position(latLng));
+                    //salvarEmArquivo("Localização do marcador: \n" + "Latitude: "+latLng.latitude+"\nLongitude: "+latLng.longitude+"\n\n");
+                    googleMap.addMarker(new MarkerOptions().title("TESTE").position(latLng));
                     Intent i = new Intent(MapActivity.this, CriarProActivity.class);
                     i.putExtra("position", latLng);
                     startActivityForResult(i, 1);
                 }
+            }
+        });
+
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Intent i = new Intent(MapActivity.this, InfoActivity.class);
+                startActivity(i);
+                return true;
             }
         });
     }
@@ -186,6 +199,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
         this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(y, x), position.zoom));
+    }
+
+    private void salvarEmArquivo(String texto){
+        String filename = "Marcadores";
+        String string = texto;
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(string.getBytes());
+            outputStream.close();
+            Log.d("Arquivo","SALVO");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
