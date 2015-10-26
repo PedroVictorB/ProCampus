@@ -32,7 +32,6 @@
         <activity
             android:name=".Activities.CriarProActivity"
             android:label="@string/title_activity_criar_pro" >
-
         </activity>
         <activity
             android:name=".Activities.LoginActivity"
@@ -40,8 +39,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity android:name=".Activities.InfoActivity" >
 

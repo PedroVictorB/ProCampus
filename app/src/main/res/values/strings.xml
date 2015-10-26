@@ -11,4 +11,7 @@
     <string name="password_text_hint">senha do sigaa</string>
     <string name="go_to_map_btn">Ir para o mapa</string>
     <string name="title_activity_inform">InformActivity</string>
+    <string name="open_navigation_drawer">Abrir Menu</string>
+    <string name="close_navigation_drawer">Fechar Menu</string>
+    <string name="map_activity_toolbar_title">Mapa dos problemas</string>
 </resources>
