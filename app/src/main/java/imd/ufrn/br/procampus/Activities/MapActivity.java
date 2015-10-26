@@ -3,9 +3,14 @@ package imd.ufrn.br.procampus.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -62,8 +67,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         buildGoogleApiClient();
         createLocationRequest();
+        initComponents();
+
     }
 
+    private void initComponents() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map);
+        toolbar.setTitle(R.string.map_activity_toolbar_title);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_map);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
+        toggle.syncState();
+    }
     @Override
     protected void onStart() {
         super.onStart();
