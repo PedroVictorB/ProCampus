@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
 import imd.ufrn.br.procampus.R;
+import imd.ufrn.br.procampus.common.RippleView;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         botMapa.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 Intent i = new Intent(LoginActivity.this, MapActivity.class);
                 startActivity(i);
             }
@@ -44,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 
         botLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
 
                 editor.putString("login", login.getText().toString());
@@ -55,6 +57,5 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
     }
 }

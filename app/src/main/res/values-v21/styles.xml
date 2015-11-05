@@ -1,11 +1,17 @@
-<resources>
+<resources>>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <!--
         <item name="android:windowBackground">@color/accent</item>
         <item name="android:colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorPrimary">@color/window_background</item>
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:windowTranslucentStatus">true</item>
+        -->
     </style>
 </resources>

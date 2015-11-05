@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="30dp"
-    android:paddingRight="30dp"
-    android:paddingTop="30dp">
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="30dp"
+    android:background="#424242">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,9 +19,9 @@
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:id="@+id/textView"
-            android:textSize="50sp"
+            android:textSize="35sp"
             android:textStyle="bold"
-            android:textColor="#303F9F"
+            android:textColor="#1565C0"
             android:fontFamily="Impact, fantasy"
             android:layout_gravity="center_horizontal"/>
     </LinearLayout>
@@ -31,29 +32,26 @@
         android:orientation="vertical"
         android:layout_weight="4">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:paddingLeft="0dp">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
             android:id="@+id/usernameText"
-            android:hint="@string/username_text_hint"/>
-        </android.support.design.widget.TextInputLayout>
+            android:hint="@string/username_text_hint"
+            android:background="@drawable/login_field_layout"
+            android:paddingLeft="5dp"
+            android:drawableLeft="@drawable/ic_account_grey600_24dp"/>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/passwordText"
-            android:hint="@string/password_text_hint"/>
-        </android.support.design.widget.TextInputLayout>
+            android:hint="@string/password_text_hint"
+            android:background="@drawable/login_field_layout"
+            android:paddingLeft="5dp"
+            android:drawableLeft="@drawable/ic_lock_grey600_24dp"/>
 
         <Button
             android:layout_width="match_parent"
@@ -64,7 +62,8 @@
             android:textColor="#ffffff"
             android:fontFamily="impact"
             android:textStyle="bold"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:background="@drawable/login_button_layout"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -77,6 +76,8 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:textSize="12sp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:background="@drawable/login_button_layout"/>
+
     </LinearLayout>
 </LinearLayout>
