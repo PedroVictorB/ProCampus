@@ -11,6 +11,7 @@
     <include layout="@layout/map_activity_content"/>
 
     <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view_map"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
         android:layout_gravity="start"

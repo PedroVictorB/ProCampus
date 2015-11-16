@@ -3,6 +3,8 @@ package imd.ufrn.br.procampus.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -37,8 +39,9 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import imd.ufrn.br.procampus.R;
+import imd.ufrn.br.procampus.utils.OAuthTokenRequest;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     //Latitude e longitude do centro da UFRN.
     private static final LatLng latLngUFRN = new LatLng(-5.837523, -35.203309);
@@ -98,6 +101,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return super.onCreateOptionsMenu(menu);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_login) {
+            this.authenticate();
+        } else if (id == R.id.nav_problem) {
+
+        } else if (id == R.id.nav_assault) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_manage) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_map);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     private void initComponents() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map);
         toolbar.setTitle(R.string.map_activity_toolbar_title);
@@ -106,6 +132,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_map);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
         toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_map);
+        navigationView.setNavigationItemSelectedListener(this);
     }
     @Override
     protected void onStart() {
@@ -320,5 +349,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 //update map
             }
         }
+    }
+
+    private void authenticate() {
+        OAuthTokenRequest.getInstance().getTokenCredential(this,"http://apitestes.info.ufrn.br/authz-server","pro-campus-id", "procampus");
     }
 }

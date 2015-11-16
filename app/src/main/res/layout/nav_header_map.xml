@@ -10,23 +10,24 @@
     android:gravity="bottom">
 
     <ImageView
+        android:id="@+id/nav_profile_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@drawable/ic_account_circle_white_48dp"
-        android:id="@+id/nav_profile_image" />
+        android:src="@drawable/ic_account_circle_white_48dp"/>
 
     <TextView
+        android:id="@+id/nav_profile_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Tony Stark"
+        android:text="Você não está logado"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="tony.stark@avengers.com"
-        android:id="@+id/textView" />
+        android:text="Logue para poder registrar problemas"
+        android:id="@+id/nav_profile_email" />
 
 </LinearLayout>
