@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -353,5 +354,14 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
 
     private void authenticate() {
         OAuthTokenRequest.getInstance().getTokenCredential(this,"http://apitestes.info.ufrn.br/authz-server","pro-campus-id", "procampus");
+    }
+
+    public void onClickHandler (View view) {
+        int viewId = view.getId();
+
+        if (viewId == R.id.fab_add_problem) {
+            Intent i = new Intent(this, CriarProActivity.class);
+            startActivity(i);
+        }
     }
 }

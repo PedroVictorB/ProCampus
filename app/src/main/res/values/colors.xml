@@ -3,7 +3,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#03A9F4</color>
-    <color name="windowBackground">#727272</color>
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#727272</color>
+    <color name="colorDivider">#B6B6B6</color>
+    <color name="colorIcons">#FFFFFF</color>
+
 
     <color name="one">#0288D1</color>
     <color name="two">#01579B</color>

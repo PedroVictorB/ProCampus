@@ -25,4 +25,13 @@
         android:name="com.google.android.gms.maps.MapFragment"
         android:id="@+id/map" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add_problem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_plus_white_24dp"
+        android:onClick="onClickHandler"/>
+
 </android.support.design.widget.CoordinatorLayout>

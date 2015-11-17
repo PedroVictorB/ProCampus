@@ -1,45 +1,67 @@
 package imd.ufrn.br.procampus.Activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import imd.ufrn.br.procampus.R;
 
 public class CriarProActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    private EditText fieldTitle;
+    private EditText fieldCategory;
+    private EditText fieldDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_criar_pro);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        setSupportActionBar(toolbar);
-    }
+        this.initComponents();
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_criar, menu);
-        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
+    private void initComponents() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        toolbar.setTitle("Registrar um problema");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        fieldTitle = (EditText) findViewById(R.id.fieldTitle);
+        fieldCategory = (EditText) findViewById(R.id.fieldCategory);
+        fieldDescription = (EditText) findViewById(R.id.fieldDescription);
+    }
+
+    public void onClickHandler(View view) {
+        int viewId = view.getId();
+
+        if (viewId == R.id.fab_confirm) {
+            Snackbar.make(view, "Erro ao criar problema", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            this.registerProblem();
+        }
+    }
+
+    private void registerProblem () {
+        fieldTitle.setError("Invalid Name");
+        fieldCategory.setError("Invalid Category");
+        fieldDescription.setError("Inválid Description");
+    }
 }
+
