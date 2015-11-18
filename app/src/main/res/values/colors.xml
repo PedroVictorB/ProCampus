@@ -9,6 +9,8 @@
     <color name="colorIcons">#FFFFFF</color>
 
 
-    <color name="one">#0288D1</color>
-    <color name="two">#01579B</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="one">#9E9E9E</color>
+    <color name="two">#212121</color>
 </resources>

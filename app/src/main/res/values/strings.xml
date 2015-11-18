@@ -14,4 +14,13 @@
     <string name="open_navigation_drawer">Abrir Menu</string>
     <string name="close_navigation_drawer">Fechar Menu</string>
     <string name="map_activity_toolbar_title">Mapa dos problemas</string>
+
+
+    //Register Problem Activity
+    <string name="problem_title_hint">Título</string>
+    <string name="problem_category_hint">Categoria</string>
+    <string name="problem_description_hint">Descrição</string>
+    <string name="problem_priority_hint">Prioridade</string>
+    <string name="problem_image_btn_label">Alterar Imagem</string>
+    <string name="problem_image_hint">Adicione uma imagem</string>
 </resources>

@@ -18,122 +18,143 @@
             android:padding="12dp">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/fieldRegisterTitleLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="55dp"
                 android:layout_marginBottom="20dp">
 
                 <EditText
-                    android:id="@+id/fieldTitle"
+                    android:id="@+id/fieldRegisterTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Título" />
+                    android:hint="@string/problem_title_hint" />
 
             </android.support.design.widget.TextInputLayout>
 
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/fieldRegisterCategoryLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp">
 
                 <AutoCompleteTextView
-                    android:id="@+id/fieldCategory"
+                    android:id="@+id/fieldRegisterCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Categoria"/>
+                    android:hint="@string/problem_category_hint"/>
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/fieldRegisterDescriptionLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp">
 
                 <EditText
-                    android:id="@+id/fieldDescription"
+                    android:id="@+id/fieldRegisterDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
                     android:ems="10"
-                    android:hint="Descrição"/>
+                    android:hint="@string/problem_description_hint"/>
 
             </android.support.design.widget.TextInputLayout>
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/prioridadeRegisterLabel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/scrollableimages"
-                android:layout_below="@+id/autoCompleteTipoView"
-                android:fillViewport="false"
-                android:measureAllChildren="false"
-                android:background="#d4d1d1"
-                android:layout_marginBottom="20dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="200px"
-                        android:layout_height="200px"
-                        android:src="@drawable/buraco"
-                        android:scaleType="centerCrop" />
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/problem_priority_hint"
+                android:layout_marginLeft="4dp"
+                android:layout_marginBottom="10dp"/>
 
             <RadioGroup
+                android:id="@+id/prioridadeRegisterRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/radioGroup">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Prioridade"
-                    android:id="@+id/priolabelView"
-                    android:layout_alignBaseline="@+id/buttonRegistrar"
-                    android:layout_alignBottom="@+id/buttonRegistrar"
-                    android:layout_toLeftOf="@+id/buttonRegistrar"
-                    android:layout_toStartOf="@+id/buttonRegistrar" />
+                android:orientation="horizontal">
 
                 <RadioButton
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="1"
-                    android:id="@+id/radioButton"
+                    android:id="@+id/prioridadeRegisterRadioButtonOne"
                     android:checked="false" />
 
                 <RadioButton
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="2"
-                    android:id="@+id/radioButton2"
+                    android:id="@+id/prioridadeRegisterRadioButtonTwo"
                     android:checked="false" />
 
                 <RadioButton
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="3"
-                    android:id="@+id/radioButton3"
+                    android:id="@+id/prioridadeRadioButtonThree"
                     android:checked="false" />
 
                 <RadioButton
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="4"
-                    android:id="@+id/radioButton4"
+                    android:id="@+id/prioridadeRadioButtonFour"
                     android:checked="false" />
 
                 <RadioButton
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="5"
-                    android:id="@+id/radioButton5"
+                    android:id="@+id/prioridadeRadioButtonFive"
                     android:checked="false" />
             </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="25dp">
+
+                <TextView
+                    android:id="@+id/problemRgisterImageLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/problem_image_hint"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <ImageView
+                    android:id="@+id/problemRegisterImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:src="@drawable/default_problem_image"
+                    android:scaleType="centerCrop"
+                    android:layout_marginBottom="10dp"/>
+
+                <Button
+                    android:id="@+id/btnAddImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/problem_image_btn_label"
+                    android:textColor="@color/white"
+                    android:background="@drawable/login_button_layout"
+                    android:onClick="onClickHandler"/>
+
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

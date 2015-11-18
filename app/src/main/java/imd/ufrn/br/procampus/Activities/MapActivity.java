@@ -3,7 +3,9 @@ package imd.ufrn.br.procampus.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -43,6 +45,12 @@ import imd.ufrn.br.procampus.R;
 import imd.ufrn.br.procampus.utils.OAuthTokenRequest;
 
 public class MapActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    private static final String TAG = MapActivity.class.getSimpleName();
+
+    private static final int ACTION_UPDATE_MAP = 1;
+    private static final int ACTION_REGISTER_PROBLEM = 2;
+
 
     //Latitude e longitude do centro da UFRN.
     private static final LatLng latLngUFRN = new LatLng(-5.837523, -35.203309);
@@ -345,9 +353,16 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 1){
-            if(resultCode == 1){
+        if(resultCode == RESULT_OK){
+            if(requestCode == ACTION_UPDATE_MAP){
                 //update map
+            }
+            else if (requestCode == ACTION_REGISTER_PROBLEM) {
+                String message = data.getStringExtra(CriarProActivity.EXTRA_MESSAGE_REGISTER);
+                if (!message.isEmpty()) {
+                    CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutMap);
+                    Snackbar.make(coordinatorLayout,message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
             }
         }
     }
@@ -360,8 +375,8 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
         int viewId = view.getId();
 
         if (viewId == R.id.fab_add_problem) {
-            Intent i = new Intent(this, CriarProActivity.class);
-            startActivity(i);
+            Intent intent = new Intent(this, CriarProActivity.class);
+            startActivityForResult(intent, ACTION_REGISTER_PROBLEM);
         }
     }
 }
