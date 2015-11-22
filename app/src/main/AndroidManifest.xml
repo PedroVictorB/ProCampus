@@ -34,11 +34,7 @@
             android:name=".Activities.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".Activities.InfoActivity" >
         </activity>
@@ -46,6 +42,15 @@
             android:name=".Activities.CriarProActivity"
             android:label="@string/title_activity_criar_pro"
             android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity android:name=".Activities.SplashActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
