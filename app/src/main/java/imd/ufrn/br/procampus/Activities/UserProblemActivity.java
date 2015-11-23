@@ -1,7 +1,9 @@
 package imd.ufrn.br.procampus.activities;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,8 @@ import imd.ufrn.br.procampus.entities.User;
 
 public class UserProblemActivity extends AppCompatActivity {
 
+    private static final int ACTION_REGISTER_PROBLEM = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,14 +41,7 @@ public class UserProblemActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
         ArrayList<Problem> mDataset = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
@@ -61,6 +58,27 @@ public class UserProblemActivity extends AppCompatActivity {
         }
 
         recyclerView.setAdapter(new UserProblemAdapter(mDataset));
+    }
+
+    public void onClickHandler(View view) {
+        int id = view.getId();
+
+        if (id == R.id.fab_add_problem) {
+            Intent intent = new Intent(this, CriarProActivity.class);
+            startActivityForResult(intent, ACTION_REGISTER_PROBLEM);
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            if (requestCode == ACTION_REGISTER_PROBLEM) {
+                String message = data.getStringExtra(CriarProActivity.EXTRA_MESSAGE_REGISTER);
+                if (!message.isEmpty()) {
+                    CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.userProblemCoordinatorLayout);
+                    Snackbar.make(coordinatorLayout,message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
+            }
+        }
     }
 
 }
