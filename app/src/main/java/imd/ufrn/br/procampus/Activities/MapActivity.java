@@ -2,6 +2,8 @@ package imd.ufrn.br.procampus.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -39,16 +41,22 @@ import com.google.maps.android.PolyUtil;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import imd.ufrn.br.procampus.R;
 import imd.ufrn.br.procampus.utils.OAuthTokenRequest;
 
-public class MapActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = MapActivity.class.getSimpleName();
 
     private static final int ACTION_UPDATE_MAP = 1;
     private static final int ACTION_REGISTER_PROBLEM = 2;
+
+    public static final String EXTRA_LATITUDE = MapActivity.class.getSimpleName() + ".EXTRA_LATITUDE";
+    public static final String EXTRA_LONGITUDE = MapActivity.class.getSimpleName() + ".EXTRA_LONGITUDE";
+    public static final String EXTRA_ADDRESS = MapActivity.class.getSimpleName() + ".EXTRA_ADDRESS";
 
 
     //Latitude e longitude do centro da UFRN.
@@ -83,67 +91,13 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
         mapFragment.getMapAsync(this);
         buildGoogleApiClient();
         createLocationRequest();
-        initComponents();
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_map, menu);
-
-        SearchView mSearchView = (SearchView) menu.findItem(R.id.action_search_map).getActionView();
-        mSearchView.setQueryHint("Pesquisar um problema...");
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Toast.makeText(MapActivity.this, newText, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
         return super.onCreateOptionsMenu(menu);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_login) {
-            this.authenticate();
-        } else if (id == R.id.nav_problem) {
-
-        } else if (id == R.id.nav_assault) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_manage) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_map);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void initComponents() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map);
-        toolbar.setTitle(R.string.map_activity_toolbar_title);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_map);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_map);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -202,10 +156,12 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
             public void onMapLongClick(LatLng latLng) {
                 if (PolyUtil.containsLocation(latLng, areaMarcadoresUFRN.getPoints(), true)) {
                     //salvarEmArquivo("Localização do marcador: \n" + "Latitude: "+latLng.latitude+"\nLongitude: "+latLng.longitude+"\n\n");
+                    /*
                     googleMap.addMarker(new MarkerOptions().title("TESTE").position(latLng));
                     Intent i = new Intent(MapActivity.this, CriarProActivity.class);
                     i.putExtra("position", latLng);
                     startActivityForResult(i, 1);
+                    */
                 }
             }
         });
@@ -216,6 +172,35 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
                 Intent i = new Intent(MapActivity.this, InfoActivity.class);
                 startActivity(i);
                 return true;
+            }
+        });
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                double latitude = latLng.latitude;
+                double longitude = latLng.longitude;
+                String address = "Erro ao selecionar local";
+
+                try {
+                    Geocoder geo = new Geocoder(MapActivity.this.getApplicationContext(), Locale.getDefault());
+                    List<Address> addresses = geo.getFromLocation(latitude, longitude, 1);
+                    if (addresses.size() > 0) {
+                        address = addresses.get(0).getFeatureName();
+                        //Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
+                    }
+                } catch (Exception e) {
+                    //e.printStackTrace(); // getFromLocation() may sometimes fail
+                }
+
+
+                Intent intent = new Intent();
+                intent.putExtra(EXTRA_LATITUDE, latitude);
+                intent.putExtra(EXTRA_LONGITUDE, longitude);
+                intent.putExtra(EXTRA_ADDRESS, address);
+                setResult(RESULT_OK,intent);
+                finish();
+
             }
         });
     }
@@ -368,14 +353,5 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
 
     private void authenticate() {
         OAuthTokenRequest.getInstance().getTokenCredential(this,"http://apitestes.info.ufrn.br/authz-server","pro-campus-id", "procampus");
-    }
-
-    public void onClickHandler (View view) {
-        int viewId = view.getId();
-
-        if (viewId == R.id.fab_add_problem) {
-            Intent intent = new Intent(this, CriarProActivity.class);
-            startActivityForResult(intent, ACTION_REGISTER_PROBLEM);
-        }
     }
 }
