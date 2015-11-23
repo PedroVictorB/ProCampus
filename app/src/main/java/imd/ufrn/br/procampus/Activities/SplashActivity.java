@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run()
             {
                 SplashActivity.this.finish();
-                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
             }
         }, DELAY);
 
@@ -43,4 +43,3 @@ public class SplashActivity extends AppCompatActivity {
         splashTimer.purge();
     }
 }
-
