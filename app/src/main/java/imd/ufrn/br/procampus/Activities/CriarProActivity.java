@@ -133,6 +133,7 @@ public class CriarProActivity extends AppCompatActivity {
         params.put("description", fieldDescription.getText());
         params.put("latitude", latitude);
         params.put("longitude", longitude);
+        params.put("user", 1);
         invokeWS(params);
     }
 

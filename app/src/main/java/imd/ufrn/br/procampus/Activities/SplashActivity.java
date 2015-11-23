@@ -1,4 +1,4 @@
-package imd.ufrn.br.procampus.Activities;
+package imd.ufrn.br.procampus.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
