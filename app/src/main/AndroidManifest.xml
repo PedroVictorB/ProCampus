@@ -34,6 +34,7 @@
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
+<<<<<<< HEAD
         </activity>
         <activity android:name=".activities.InfoActivity" >
         </activity>
@@ -48,15 +49,24 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+=======
+>>>>>>> 65a12ee6a483b6271faf7ae8a8ae1581a49a674b
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.UserProblemActivity"
             android:label="@string/title_activity_user_problem"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activities.MainActivity" >
+        </activity>
+        <activity android:name=".Activities.SplashActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
