@@ -1,4 +1,4 @@
-package imd.ufrn.br.procampus.Activities;
+package imd.ufrn.br.procampus.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -12,11 +12,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;

@@ -1,4 +1,4 @@
-package imd.ufrn.br.procampus.DAO;
+package imd.ufrn.br.procampus.dao;
 
 /**
  * Created by pedro on 05/10/2015.

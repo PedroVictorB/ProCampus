@@ -1,4 +1,4 @@
-package imd.ufrn.br.procampus.Entities;
+package imd.ufrn.br.procampus.entities;
 
 /**
  * Created by pedro on 05/10/2015.

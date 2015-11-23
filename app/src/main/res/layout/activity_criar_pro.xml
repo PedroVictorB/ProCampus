@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="imd.ufrn.br.procampus.Activities.CriarProActivity">
+    tools:context="imd.ufrn.br.procampus.activities.CriarProActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/toolbar_layout_problem_register"

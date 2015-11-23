@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/problem_list_item"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="5sp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/buraco"
+                    android:scaleType="centerCrop"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Brunno Moreira"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="6pt"/>
+                    <TextView
+                        android:id="@+id/problemTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Buraco em frente a reitoria"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="5pt"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="5dp">
+                        <TextView
+                            android:id="@+id/postDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="18/04/2015"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="10dp"/>
+
+                        <ImageView
+                            android:id="@+id/hasImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_image_grey600_24dp"
+                            android:layout_marginLeft="5dp"
+                            android:scaleType="centerCrop"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_comment_text_outline_grey600_24dp"
+                            android:scaleType="centerCrop"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginLeft="10dp"/>
+
+                        <TextView
+                            android:id="@+id/numberOfComments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="5dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/problemDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buraco na rua Pedro Nunes Buraco na rua Pedro Nunes Buraco na rua Pedro Nunes Buraco na rua Pedro Nunes"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
