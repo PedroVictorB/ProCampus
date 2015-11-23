@@ -1,12 +1,17 @@
 package imd.ufrn.br.procampus.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -29,34 +34,44 @@ public class MainActivity extends AppCompatActivity
 
     private final String MAP_FRAGMENT_TAG = MapFragment.class.getName();
     private final String LIST_FRAGMENT_TAG = ListFragment.class.getName();
+    private final String TAG = MainActivity.class.getName();
+
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Brunno", "onCreate");
         setContentView(R.layout.activity_main);
         initComponents();
+
+        sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        if ( !sharedPreferences.getBoolean("nav_login", true) ) {
+            Log.d("Brunno", "Entrou aqui");
+            navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_problem).setVisible(true);
+        }
     }
 
     private void initComponents() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Mapa dos Problemas");
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         Fragment fragment = new MapFragment();
@@ -76,6 +91,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d("Brunno", "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.main, menu);
 
         SearchView mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -117,11 +133,13 @@ public class MainActivity extends AppCompatActivity
                 fragment = new ListFragment();
                 TAG = LIST_FRAGMENT_TAG;
                 item.setIcon(R.drawable.ic_map_white_24dp);
+                getSupportActionBar().setTitle("Lista dos Problemas");
             }
             else if (listFragment != null && listFragment.isVisible()) {
                 fragment = new MapFragment();
                 TAG = MAP_FRAGMENT_TAG;
                 item.setIcon(R.drawable.ic_format_list_bulleted_white_24dp);
+                getSupportActionBar().setTitle("Mapa dos Problemas");
             }
 
             fragmentManager.beginTransaction().replace(R.id.content_main, fragment, TAG).commit();
@@ -137,18 +155,20 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_login) {
-
+            item.setVisible(false);
+            Menu menu = navigationView.getMenu();
+            menu.findItem(R.id.nav_problem).setVisible(true);
+            editor.putBoolean("nav_login", false);
+            editor.commit();
         } else if (id == R.id.nav_problem) {
-
+            Intent intent = new Intent(this, UserProblemActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_assault) {
-
-        } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_manage) {
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -156,5 +176,46 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("Brunno", "onResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d("Brunno", "onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d("Brunno", "onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("Brunno", "onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d("Brunno", "onSaveInstanceState");
+        outState.putBoolean("nav_login", navigationView.getMenu().findItem(R.id.nav_login).isVisible());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d("Brunno", "onRestoreInstanceState");
+        if (!savedInstanceState.getBoolean("nav_login")) {
+            navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_problem).setVisible(true);
+        }
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }

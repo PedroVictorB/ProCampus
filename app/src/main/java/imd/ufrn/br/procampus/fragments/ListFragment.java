@@ -1,14 +1,23 @@
 package imd.ufrn.br.procampus.fragments;
 
 import android.app.Activity;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.sql.Date;
+import java.util.ArrayList;
+
 import imd.ufrn.br.procampus.R;
+import imd.ufrn.br.procampus.adapters.ProblemAdapter;
+import imd.ufrn.br.procampus.entities.Problem;
+import imd.ufrn.br.procampus.entities.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +36,11 @@ public class ListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private ArrayList<Problem> mDataset;
 
     private OnFragmentInteractionListener mListener;
 
@@ -59,13 +73,19 @@ public class ListFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        initDataset();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+
+        initList(view);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -107,4 +127,32 @@ public class ListFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    private void initList (View view) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.problemList);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setAdapter(new ProblemAdapter(getActivity(), mDataset));
+    }
+
+    private void initDataset() {
+        mDataset = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            User user = new User();
+            user.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_account_circle_black_48dp));
+            user.setName("Tony Stark");
+            user.setEmail("tony@stark.com");
+
+            Problem problem = new Problem();
+            problem.setUser(user);
+            problem.setTitle("Poste apagado na parada de C&T");
+
+            long time = System.currentTimeMillis();
+            problem.setPostDate(new Date(time));
+
+            problem.setDescription("Um poste apagado está inibindo a permanencia de alunos no local");
+
+            mDataset.add(problem);
+        }
+    }
 }

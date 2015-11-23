@@ -1,5 +1,11 @@
 package imd.ufrn.br.procampus.adapters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +23,12 @@ import imd.ufrn.br.procampus.entities.Problem;
 /**
  * Created by brunomoreira on 22/11/2015.
  */
-public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHolder>{
+public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHolder> {
     private List<Problem> mDataset;
+    private Context context;
 
-    public ProblemAdapter (List<Problem> problems) {
+    public ProblemAdapter (Context context, List<Problem> problems) {
+        this.context = context;
         mDataset = problems;
     }
 
@@ -41,8 +49,14 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
         String date = dateFormat.format(mDataset.get(position).getPostDate());
         holder.postDate.setText(date);
 
-        holder.hasImage.setImageBitmap(mDataset.get(position).getImage());
-        holder.numberOfComments.setText(mDataset.get(position).getDescription());
+        if (mDataset.get(position).getImage() == null) {
+            holder.hasImage.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_grey600_24dp));
+        }
+        else {
+            holder.hasImage.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_broken_variant_grey600_24dp));
+        }
+
+        holder.numberOfComments.setText("5");
         holder.problemDescription.setText(mDataset.get(position).getDescription());
     }
 
