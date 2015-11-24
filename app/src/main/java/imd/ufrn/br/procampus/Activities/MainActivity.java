@@ -21,49 +21,70 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import imd.ufrn.br.procampus.R;
 import imd.ufrn.br.procampus.fragments.ListFragment;
 import imd.ufrn.br.procampus.fragments.MapFragment;
+import imd.ufrn.br.procampus.utils.OAuthTokenRequest;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                     MapFragment.OnFragmentInteractionListener,
                     ListFragment.OnFragmentInteractionListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private final String MAP_FRAGMENT_TAG = MapFragment.class.getName();
     private final String LIST_FRAGMENT_TAG = ListFragment.class.getName();
-    private final String TAG = MainActivity.class.getName();
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
 
+    private TextView username;
+    private TextView userEmail;
+
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+
+    private String userLogin;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Brunno", "onCreate");
         setContentView(R.layout.activity_main);
         initComponents();
 
-        sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        Intent intent = getIntent();
 
-        if ( !sharedPreferences.getBoolean("nav_login", true) ) {
-            Log.d("Brunno", "Entrou aqui");
-            navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_problem).setVisible(true);
+        if (sharedPreferences.getBoolean("user_logged", false)) {
+            changeUserInterface();
         }
+
+        if (intent.getBooleanExtra("login_pressed", false)) {
+            getUserInformation();
+        }
+
     }
 
     private void initComponents() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Mapa dos Problemas");
         setSupportActionBar(toolbar);
-
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -74,6 +95,13 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        username = (TextView) findViewById(R.id.nav_profile_username);
+        userEmail = (TextView) findViewById(R.id.nav_profile_email);
+
+        sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        //Start MapFragment
         Fragment fragment = new MapFragment();
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_main, fragment, MAP_FRAGMENT_TAG).commit();
@@ -91,23 +119,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("Brunno", "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.main, menu);
-
-        SearchView mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        mSearchView.setQueryHint("Pesquisar um problema...");
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Toast.makeText(MainActivity.this, newText, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
+        configureSearch(menu);
 
         return true;
     }
@@ -123,26 +136,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_search) {
             return true;
         } else if (id == R.id.action_toggle_view) {
-            FragmentManager fragmentManager = getFragmentManager();
-            Fragment mapFragment = fragmentManager.findFragmentByTag(MAP_FRAGMENT_TAG);
-            Fragment listFragment = fragmentManager.findFragmentByTag(LIST_FRAGMENT_TAG);
-            Fragment fragment = new MapFragment();
-            String TAG = MAP_FRAGMENT_TAG;
-
-            if (mapFragment != null && mapFragment.isVisible()) {
-                fragment = new ListFragment();
-                TAG = LIST_FRAGMENT_TAG;
-                item.setIcon(R.drawable.ic_map_white_24dp);
-                getSupportActionBar().setTitle("Lista dos Problemas");
-            }
-            else if (listFragment != null && listFragment.isVisible()) {
-                fragment = new MapFragment();
-                TAG = MAP_FRAGMENT_TAG;
-                item.setIcon(R.drawable.ic_format_list_bulleted_white_24dp);
-                getSupportActionBar().setTitle("Mapa dos Problemas");
-            }
-
-            fragmentManager.beginTransaction().replace(R.id.content_main, fragment, TAG).commit();
+            toggleProblemView(item);
         }
 
         return super.onOptionsItemSelected(item);
@@ -155,11 +149,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_login) {
-            item.setVisible(false);
-            Menu menu = navigationView.getMenu();
-            menu.findItem(R.id.nav_problem).setVisible(true);
-            editor.putBoolean("nav_login", false);
-            editor.commit();
+            authenticate();
         } else if (id == R.id.nav_problem) {
             Intent intent = new Intent(this, UserProblemActivity.class);
             startActivity(intent);
@@ -217,5 +207,87 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().findItem(R.id.nav_problem).setVisible(true);
         }
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    private void authenticate() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("login_pressed", true);
+        OAuthTokenRequest.getInstance().getTokenCredential(this, getString(R.string.sigaa_api_base_url) + "authz-server", getString(R.string.sigaa_client_id), getString(R.string.sigaa_client_secret), intent);
+    }
+
+    private void getUserInformation() {
+        String url = getString(R.string.sigaa_api_base_url) + "usuario-services/services/usuario/info";
+
+        OAuthTokenRequest.getInstance().resourceRequest(this, Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    editor.putBoolean("user_logged", true);
+                    editor.putString("nome", jsonObject.getString("nome"));
+                    editor.putString("login", jsonObject.getString("login"));
+                    editor.commit();
+
+                    changeUserInterface();
+                } catch (JSONException e) {
+                    Log.d(TAG, "getUserInformation JSONException - " + e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "getUserInformation VolleyError - " + error.getMessage());
+            }
+        });
+    }
+
+    private void toggleProblemView(MenuItem item) {
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment mapFragment = fragmentManager.findFragmentByTag(MAP_FRAGMENT_TAG);
+        Fragment listFragment = fragmentManager.findFragmentByTag(LIST_FRAGMENT_TAG);
+        Fragment fragment = new MapFragment();
+        String TAG = MAP_FRAGMENT_TAG;
+
+        if (mapFragment != null && mapFragment.isVisible()) {
+            fragment = new ListFragment();
+            TAG = LIST_FRAGMENT_TAG;
+            item.setIcon(R.drawable.ic_map_white_24dp);
+            getSupportActionBar().setTitle("Lista dos Problemas");
+        }
+        else if (listFragment != null && listFragment.isVisible()) {
+            fragment = new MapFragment();
+            TAG = MAP_FRAGMENT_TAG;
+            item.setIcon(R.drawable.ic_format_list_bulleted_white_24dp);
+            getSupportActionBar().setTitle("Mapa dos Problemas");
+        }
+
+        fragmentManager.beginTransaction().replace(R.id.content_main, fragment, TAG).commit();
+    }
+
+    private void configureSearch(Menu menu) {
+        SearchView mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchView.setQueryHint("Pesquisar um problema...");
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Toast.makeText(MainActivity.this, newText, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
+    private void changeUserInterface() {
+        Menu menu = navigationView.getMenu();
+        menu.findItem(R.id.nav_login).setVisible(false);
+        menu.findItem(R.id.nav_problem).setVisible(true);
+
+        username.setText(sharedPreferences.getString("nome", ""));
+        userEmail.setText(sharedPreferences.getString("login", ""));
     }
 }

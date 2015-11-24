@@ -33,4 +33,9 @@
     <string name="title_activity_user_problem">UserProblemActivity</string>
     <string name="api_url">https://procampus.herokuapp.com/</string>
     <string name="problem_local_hint">Local</string>
+    <string name="register_problem_error_msg">Esse campo é obrigatório</string>
+    <string name="sigaa_api_base_url">http://apitestes.info.ufrn.br/</string>
+    <string name="register_problem_success_msg">Problema Registrado com Sucesso</string>
+    <string name="sigaa_client_id">pro-campus-id</string>
+    <string name="sigaa_client_secret">procampus</string>
 </resources>
