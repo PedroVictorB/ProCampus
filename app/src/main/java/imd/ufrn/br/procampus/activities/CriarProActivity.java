@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -39,6 +38,7 @@ import java.io.IOException;
 
 import cz.msebera.android.httpclient.Header;
 import imd.ufrn.br.procampus.R;
+import imd.ufrn.br.procampus.utils.RestClient;
 
 public class CriarProActivity extends AppCompatActivity {
 
@@ -55,11 +55,12 @@ public class CriarProActivity extends AppCompatActivity {
     private EditText fieldTitle;
     private EditText fieldCategory;
     private EditText fieldDescription;
-    private EditText fieldRegisterLocation;
+    private EditText fieldRegisterLocal;
 
     private TextInputLayout fieldTitleLayout;
     private TextInputLayout fieldCategoryLayout;
     private TextInputLayout fieldDescriptionLayout;
+    private TextInputLayout fieldRegisterLocalLayout;
 
     private ProgressDialog prgDialog;
 
@@ -97,11 +98,12 @@ public class CriarProActivity extends AppCompatActivity {
         fieldTitle = (EditText) findViewById(R.id.fieldRegisterTitle);
         fieldCategory = (EditText) findViewById(R.id.fieldRegisterCategory);
         fieldDescription = (EditText) findViewById(R.id.fieldRegisterDescription);
-        fieldRegisterLocation = (EditText) findViewById(R.id.fieldRegisterLocation);
+        fieldRegisterLocal = (EditText) findViewById(R.id.fieldRegisterLocal);
 
         fieldTitleLayout = (TextInputLayout) findViewById(R.id.fieldRegisterTitleLayout);
         fieldCategoryLayout = (TextInputLayout) findViewById(R.id.fieldRegisterCategoryLayout);
         fieldDescriptionLayout = (TextInputLayout) findViewById(R.id.fieldRegisterDescriptionLayout);
+        fieldRegisterLocalLayout = (TextInputLayout) findViewById(R.id.fieldRegisterLocalLayout);
 
         prgDialog = new ProgressDialog(this);
         prgDialog.setMessage("Registrand problema...");
@@ -123,17 +125,17 @@ public class CriarProActivity extends AppCompatActivity {
     }
 
     private void registerProblem () {
-        //fieldTitleLayout.setError("Título inválido");
-        //fieldCategoryLayout.setError("Categoria inválida");
-        //fieldDescriptionLayout.setError("Descrição inválida");
 
-        RequestParams params = new RequestParams();
-        params.put("title", fieldTitle.getText());
-        params.put("category", fieldCategory.getText());
-        params.put("description", fieldDescription.getText());
-        params.put("latitude", latitude);
-        params.put("longitude", longitude);
-        invokeWS(params);
+        if ( !validateRegisterForm() ) {
+            RequestParams params = new RequestParams();
+            params.put("title", fieldTitle.getText());
+            params.put("category", fieldCategory.getText());
+            params.put("description", fieldDescription.getText());
+            params.put("latitude", latitude);
+            params.put("longitude", longitude);
+            params.put("user", 1);
+            registerProblem(params);
+        }
     }
 
     @Override
@@ -184,7 +186,7 @@ public class CriarProActivity extends AppCompatActivity {
                 latitude = data.getDoubleExtra(MapActivity.EXTRA_LATITUDE, -5.837523);
                 longitude = data.getDoubleExtra(MapActivity.EXTRA_LONGITUDE, -35.203309);
                 String address = data.getStringExtra(MapActivity.EXTRA_ADDRESS);
-                fieldRegisterLocation.setText(address);
+                fieldRegisterLocal.setText(address);
             }
         }
     }
@@ -225,42 +227,31 @@ public class CriarProActivity extends AppCompatActivity {
         }
     }
 
-    public void invokeWS(RequestParams params){
-        Log.d("Brunno", "Vai tentar criar o problema");
+    public void registerProblem(RequestParams params){
         prgDialog.show();
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.post(getString(R.string.api_url) + "/problem/create", params, new AsyncHttpResponseHandler() {
-
+        RestClient.post(getString(R.string.api_url) + "/problem/create", params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.d("Brunno", "Problema criado com sucesso");
                 prgDialog.hide();
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_MESSAGE_REGISTER, "Problema Registrado com Sucesso");
+                intent.putExtra(EXTRA_MESSAGE_REGISTER, getString(R.string.register_problem_success_msg));
                 setResult(RESULT_OK, intent);
                 finish();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("Brunno", "Erro ao criar problema");
-                String message;
-                // Hide Progress Dialog
                 prgDialog.hide();
-
-                // When Http response code is '404'
-                if(statusCode == 404){
-                    message = "Requested resource not found";
+                if (statusCode == 404) {
+                    Log.d(TAG, "registerProblem - Requested resource not found (http " + statusCode + ")");
                 }
-                // When Http response code is '500'
-                else if(statusCode == 500){
-                    message = "Something went wrong at server end";
+                else if (statusCode == 500) {
+                    Log.d(TAG, "registerProblem - Something went wrong at server end (http " + statusCode + ")");
                 }
-                // When Http response code other than 404, 500
-                else{
-                    message = "Unexpected Error occcured! [Most common Error: Device might not be connected to Internet or remote server is not up and running]";
+                else {
+                    Log.d(TAG, "registerProblem - Unexpected Error occcured! [Most common Error: Device might not be connected to Internet or remote server is not up and running] (http " + statusCode);
                 }
-                Snackbar.make(coordinatorLayout,message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Snackbar.make(coordinatorLayout, "Erro ao registrar problema", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
     }
@@ -268,6 +259,27 @@ public class CriarProActivity extends AppCompatActivity {
     private void getLocation() {
         Intent intent = new Intent(this, MapActivity.class);
         startActivityForResult(intent, ACTION_REQUEST_LOCAL);
+    }
+
+    private boolean validateRegisterForm() {
+        String title = fieldTitle.getText().toString();
+        String category = fieldCategory.getText().toString();
+        String description = fieldDescription.getText().toString();
+        String local = fieldRegisterLocal.getText().toString();
+
+        if (title.isEmpty()) {
+            fieldTitleLayout.setError(getString(R.string.register_problem_error_msg));
+        }
+        if (category.isEmpty()) {
+            fieldCategoryLayout.setError(getString(R.string.register_problem_error_msg));
+        }
+        if (description.isEmpty()) {
+            fieldDescriptionLayout.setError(getString(R.string.register_problem_error_msg));
+        }
+        if (local.equals("Local")) {
+            fieldRegisterLocalLayout.setError(getString(R.string.register_problem_error_msg));
+        }
+        return true;
     }
 }
 
