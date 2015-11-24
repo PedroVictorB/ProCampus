@@ -3,8 +3,10 @@ package imd.ufrn.br.procampus.activities;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -67,6 +69,9 @@ public class CriarProActivity extends AppCompatActivity {
     private double latitude;
     private double longitude;
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,13 +112,16 @@ public class CriarProActivity extends AppCompatActivity {
 
         prgDialog = new ProgressDialog(this);
         prgDialog.setMessage("Registrand problema...");
+
+        sharedPreferences = this.getSharedPreferences(MainActivity.class.getCanonicalName(), Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
     }
 
     public void onClickHandler(View view) {
         int viewId = view.getId();
 
         if (viewId == R.id.fabConfirmProblemRegister) {
-            this.registerProblem();
+            registerProblem();
         }
         else if (viewId == R.id.btnAddImage) {
             ImageDialogFragment imageDialogFragment = new ImageDialogFragment();
@@ -126,14 +134,14 @@ public class CriarProActivity extends AppCompatActivity {
 
     private void registerProblem () {
 
-        if ( !validateRegisterForm() ) {
+        if ( validateRegisterForm() ) {
             RequestParams params = new RequestParams();
             params.put("title", fieldTitle.getText());
             params.put("category", fieldCategory.getText());
             params.put("description", fieldDescription.getText());
             params.put("latitude", latitude);
             params.put("longitude", longitude);
-            params.put("user", 1);
+            params.put("user", sharedPreferences.getString("proCampusUserId", ""));
             registerProblem(params);
         }
     }

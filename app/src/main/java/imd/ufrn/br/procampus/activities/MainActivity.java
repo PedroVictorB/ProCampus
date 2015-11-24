@@ -27,6 +27,9 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,10 +39,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
 import imd.ufrn.br.procampus.R;
 import imd.ufrn.br.procampus.fragments.ListFragment;
 import imd.ufrn.br.procampus.fragments.MapFragment;
 import imd.ufrn.br.procampus.utils.OAuthTokenRequest;
+import imd.ufrn.br.procampus.utils.RestClient;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -59,9 +64,6 @@ public class MainActivity extends AppCompatActivity
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-
-    private String userLogin;
-    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity
         username = (TextView) findViewById(R.id.nav_profile_username);
         userEmail = (TextView) findViewById(R.id.nav_profile_email);
 
-        sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        sharedPreferences = this.getSharedPreferences(MainActivity.class.getCanonicalName(), Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         //Start MapFragment
@@ -170,38 +172,38 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        Log.d("Brunno", "onResume");
+        Log.d(TAG, "onResume");
         super.onResume();
     }
 
     @Override
     protected void onRestart() {
-        Log.d("Brunno", "onRestart");
+        Log.d(TAG, "onRestart");
         super.onRestart();
     }
 
     @Override
     protected void onStart() {
-        Log.d("Brunno", "onStart");
+        Log.d(TAG, "onStart");
         super.onStart();
     }
 
     @Override
     protected void onStop() {
-        Log.d("Brunno", "onStop");
+        Log.d(TAG, "onStop");
         super.onStop();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.d("Brunno", "onSaveInstanceState");
+        Log.d(TAG, "onSaveInstanceState");
         outState.putBoolean("nav_login", navigationView.getMenu().findItem(R.id.nav_login).isVisible());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d("Brunno", "onRestoreInstanceState");
+        Log.d(TAG, "onRestoreInstanceState");
         if (!savedInstanceState.getBoolean("nav_login")) {
             navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_problem).setVisible(true);
@@ -228,6 +230,8 @@ public class MainActivity extends AppCompatActivity
                     editor.putString("nome", jsonObject.getString("nome"));
                     editor.putString("login", jsonObject.getString("login"));
                     editor.commit();
+
+                    verifyProCampusUser();
 
                     changeUserInterface();
                 } catch (JSONException e) {
@@ -289,5 +293,55 @@ public class MainActivity extends AppCompatActivity
 
         username.setText(sharedPreferences.getString("nome", ""));
         userEmail.setText(sharedPreferences.getString("login", ""));
+    }
+
+    private void verifyProCampusUser() {
+        String matricula = sharedPreferences.getString("login", "");
+        RestClient.get(getString(R.string.api_url) + "/user/matricula/" + matricula, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    if (response.has("id")) {
+                        editor.putString("proCampusUserId", response.getString("id"));
+                        editor.putBoolean("hasProCampusUser", true);
+                        editor.commit();
+                    } else {
+                        createProCampusUser();
+                    }
+                } catch (JSONException e) {
+                    Log.d(TAG, "verifyProCampusUser JSONException - " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d(TAG, "verifyProCampusUser Request Error");
+            }
+        });
+    }
+
+    private void createProCampusUser () {
+        RequestParams params = new RequestParams();
+        params.put("name", sharedPreferences.getString("nome", ""));
+        params.put("email", sharedPreferences.getString("login", ""));
+        params.put("matricula", sharedPreferences.getString("login", ""));
+
+        RestClient.post(getString(R.string.api_url) + "/user/create", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    editor.putString("proCampusUserId", response.getString("id"));
+                    editor.putBoolean("hasProCampusUser", true);
+                    editor.commit();
+                } catch (JSONException e) {
+                    Log.d(TAG, "createProCampusUser JSONException - " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d(TAG, "createProCampusUser Request Error");
+            }
+        });
     }
 }
