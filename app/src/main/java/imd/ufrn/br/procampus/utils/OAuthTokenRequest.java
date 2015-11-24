@@ -2,7 +2,9 @@ package imd.ufrn.br.procampus.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.webkit.WebView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -37,6 +39,8 @@ public class OAuthTokenRequest {
 
     private String clientId, clientSecret;
 
+    private OAuthManager oauth;
+
     public static OAuthTokenRequest getInstance(){
         if(oAuthTokenRequest == null)
             oAuthTokenRequest = new OAuthTokenRequest();
@@ -47,7 +51,8 @@ public class OAuthTokenRequest {
     private OAuthTokenRequest() {
     }
 
-    public Credential getTokenCredential(Activity activity,String oauthServerURL, String clientId,String clientSecret){
+    public Credential getTokenCredential(final Activity activity,String oauthServerURL,
+                                         String clientId,String clientSecret, final Intent i){
 
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -60,7 +65,6 @@ public class OAuthTokenRequest {
                 new ClientParametersAuthentication(clientId, clientSecret),
                 clientId,
                 oauthServerURL +"/oauth/authorize");
-        //builder.setCredentialStore(credentialStore);
 
         AuthorizationFlow flow = builder.build();
 
@@ -79,13 +83,14 @@ public class OAuthTokenRequest {
 
         };
 
-        OAuthManager oauth = new OAuthManager(flow, controller);
+        oauth = new OAuthManager(flow, controller);
 
         try {
             OAuthManager.OAuthCallback<Credential> callback = new OAuthManager.OAuthCallback<Credential>() {
                 @Override public void run(OAuthManager.OAuthFuture<Credential> future) {
                     try {
                         credential = future.getResult();
+                        activity.startActivity(i);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -122,6 +127,10 @@ public class OAuthTokenRequest {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
+
+    public void logout(Context context, String url) {
+        WebView w= new WebView(context);
+        w.loadUrl(url);
+        credential = null;
+    }
 }
-
-
