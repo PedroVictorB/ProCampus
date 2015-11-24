@@ -350,8 +350,4 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
     }
-
-    private void authenticate() {
-        OAuthTokenRequest.getInstance().getTokenCredential(this,"http://apitestes.info.ufrn.br/authz-server","pro-campus-id", "procampus");
-    }
 }
