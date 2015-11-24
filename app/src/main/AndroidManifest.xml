@@ -53,7 +53,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activities.MainActivity" >
         </activity>
-        <activity android:name=".Activities.SplashActivity"
+        <activity android:name=".activities.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
