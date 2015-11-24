@@ -192,8 +192,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 } catch (Exception e) {
                     //e.printStackTrace(); // getFromLocation() may sometimes fail
                 }
-
-
+                
                 Intent intent = new Intent();
                 intent.putExtra(EXTRA_LATITUDE, latitude);
                 intent.putExtra(EXTRA_LONGITUDE, longitude);
