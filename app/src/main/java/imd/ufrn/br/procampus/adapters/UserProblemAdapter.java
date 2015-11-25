@@ -36,8 +36,8 @@ public class UserProblemAdapter extends RecyclerView.Adapter<UserProblemAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.problemTitle.setText(mDataset.get(position).getTitle());
 
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String date = dateFormat.format(mDataset.get(position).getPostDate());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String date = formatter.format(mDataset.get(position).getPostDate());
         holder.postDate.setText(date);
 
         holder.numberOfComments.setText("5");

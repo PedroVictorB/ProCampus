@@ -120,9 +120,7 @@ public class UserProblemActivity extends AppCompatActivity {
     }
 
     private void loadUserProblems () {
-        String userId = sharedPreferences.getString("proCampusUserId", "4");
-        //RequestParams params = new RequestParams();
-        //params.put("id", userId);
+        String userId = sharedPreferences.getString("proCampusUserId", "");
         RestClient.get(getString(R.string.api_url) + "/problem/user/" + userId, null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -135,10 +133,9 @@ public class UserProblemActivity extends AppCompatActivity {
                         Problem problem = new Problem();
                         problem.setTitle(jsonProblem.getString("title"));
 
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         String data = jsonProblem.getString("date");
-                        Date date = new java.sql.Date(formatter.parse(data).getTime());
-                        problem.setPostDate(date);
+                        SimpleDateFormat  formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        problem.setPostDate(new Date(formatter.parse(data).getTime()));
 
                         problem.setDescription(jsonProblem.getString("description"));
 
