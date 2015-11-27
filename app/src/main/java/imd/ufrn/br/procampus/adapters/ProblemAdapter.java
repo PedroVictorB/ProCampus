@@ -45,7 +45,7 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
         holder.username.setText(mDataset.get(position).getUser().getName());
         holder.problemTitle.setText(mDataset.get(position).getTitle());
 
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String date = dateFormat.format(mDataset.get(position).getPostDate());
         holder.postDate.setText(date);
 
