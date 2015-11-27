@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import imd.ufrn.br.procampus.R;
@@ -27,9 +28,19 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
     private List<Problem> mDataset;
     private Context context;
 
+    public ProblemAdapter(Context context) {
+        this.context = context;
+        mDataset = new ArrayList<Problem>();
+    }
+
     public ProblemAdapter (Context context, List<Problem> problems) {
         this.context = context;
         mDataset = problems;
+    }
+
+    public void add(int position, Problem problem) {
+        mDataset.add(position, problem);
+        notifyItemInserted(position);
     }
 
     @Override

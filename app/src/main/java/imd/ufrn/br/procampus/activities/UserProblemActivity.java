@@ -43,7 +43,7 @@ public class UserProblemActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
-    RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManager;
 
     private SharedPreferences sharedPreferences;
 

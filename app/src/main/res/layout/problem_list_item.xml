@@ -27,7 +27,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_marginTop="5dp"
-                    android:src="@drawable/buraco"
+                    android:src="@drawable/ic_account_circle_grey600_48dp"
                     android:scaleType="centerCrop"/>
 
                 <LinearLayout
