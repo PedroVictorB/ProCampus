@@ -1,6 +1,7 @@
 package imd.ufrn.br.procampus.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -57,6 +58,8 @@ public class ListFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
 
     private ProblemAdapter mAdapter;
+
+    private ProgressDialog prgDialog;
 
     private OnFragmentInteractionListener mListener;
 
@@ -154,12 +157,16 @@ public class ListFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
+        prgDialog = new ProgressDialog(getActivity());
+        prgDialog.setMessage("Carregando...");
+
         mAdapter = new ProblemAdapter(getActivity());
 
         recyclerView.setAdapter(mAdapter);
     }
 
     private void loadProblems () {
+        prgDialog.show();
         RestClient.get(getString(R.string.api_url) + "/problem/readAll", null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -184,6 +191,7 @@ public class ListFragment extends Fragment {
 
                         mAdapter.add(i, problem);
                     }
+                    prgDialog.hide();
                 } catch (JSONException e) {
                     Log.d(TAG, "loadUserProblems JSONException - " + e.getMessage());
                 } catch (ParseException e) {

@@ -116,7 +116,7 @@ public class CriarProActivity extends AppCompatActivity {
         fieldRegisterLocalLayout = (TextInputLayout) findViewById(R.id.fieldRegisterLocalLayout);
 
         prgDialog = new ProgressDialog(this);
-        prgDialog.setMessage("Registrand problema...");
+        prgDialog.setMessage("Registrando problema...");
 
         sharedPreferences = this.getSharedPreferences(MainActivity.class.getCanonicalName(), Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
