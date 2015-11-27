@@ -1,5 +1,6 @@
 package imd.ufrn.br.procampus.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,6 +49,8 @@ public class UserProblemActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     private UserProblemAdapter mAdapter;
+
+    private ProgressDialog prgDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +101,9 @@ public class UserProblemActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        prgDialog = new ProgressDialog(this);
+        prgDialog.setMessage("Carregando...");
+
         mAdapter = new UserProblemAdapter();
 
         recyclerView.setAdapter(mAdapter);
@@ -124,6 +130,7 @@ public class UserProblemActivity extends AppCompatActivity {
     }
 
     private void loadUserProblems () {
+        prgDialog.show();
         String userId = sharedPreferences.getString("proCampusUserId", "");
         RestClient.get(getString(R.string.api_url) + "/problem/user/" + userId, null, new JsonHttpResponseHandler() {
             @Override
@@ -144,6 +151,7 @@ public class UserProblemActivity extends AppCompatActivity {
 
                         mAdapter.add(i, problem);
                     }
+                    prgDialog.hide();
                 } catch (JSONException e) {
                     Log.d(TAG, "loadUserProblems JSONException - " + e.getMessage());
                 } catch (ParseException e) {
