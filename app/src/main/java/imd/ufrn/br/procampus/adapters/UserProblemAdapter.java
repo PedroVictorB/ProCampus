@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import imd.ufrn.br.procampus.R;
@@ -20,10 +21,18 @@ import imd.ufrn.br.procampus.entities.Problem;
 public class UserProblemAdapter extends RecyclerView.Adapter<UserProblemAdapter.ViewHolder> {
     private List<Problem> mDataset;
 
+    public UserProblemAdapter () {
+        mDataset = new ArrayList<Problem>();
+    }
+
     public UserProblemAdapter (List<Problem> problems) {
         mDataset = problems;
     }
 
+    public void add(int position, Problem problem) {
+        mDataset.add(position, problem);
+        notifyItemInserted(position);
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

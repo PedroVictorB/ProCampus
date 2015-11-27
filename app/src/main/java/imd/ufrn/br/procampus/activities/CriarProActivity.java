@@ -30,7 +30,11 @@ import android.widget.ImageView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,6 +55,7 @@ public class CriarProActivity extends AppCompatActivity {
     private static final int ACTION_REQUEST_LOCAL = 2;
 
     public static final String EXTRA_MESSAGE_REGISTER = CriarProActivity.class.getSimpleName() + ".EXTRA_MESSAGE_REGISTER";
+    public static final String EXTRA_MESSAGE_PROBLEM_ID = CriarProActivity.class.getSimpleName() + ".EXTRA_MESSAGE_PROBLEM_ID";
 
     private CoordinatorLayout coordinatorLayout;
 
@@ -142,7 +147,7 @@ public class CriarProActivity extends AppCompatActivity {
             params.put("latitude", latitude);
             params.put("longitude", longitude);
             params.put("user", sharedPreferences.getString("proCampusUserId", ""));
-            registerProblem(params);
+            registerProblemInAPI(params);
         }
     }
 
@@ -235,20 +240,26 @@ public class CriarProActivity extends AppCompatActivity {
         }
     }
 
-    public void registerProblem(RequestParams params){
+    public void registerProblemInAPI(RequestParams params){
         prgDialog.show();
-        RestClient.post(getString(R.string.api_url) + "/problem/create", params, new AsyncHttpResponseHandler() {
+        RestClient.post(getString(R.string.api_url) + "/problem/create", params, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 prgDialog.hide();
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_MESSAGE_REGISTER, getString(R.string.register_problem_success_msg));
-                setResult(RESULT_OK, intent);
-                finish();
+
+                try {
+                    intent.putExtra(EXTRA_MESSAGE_REGISTER, getString(R.string.register_problem_success_msg));
+                    intent.putExtra(EXTRA_MESSAGE_PROBLEM_ID, response.getInt("id"));
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } catch (JSONException e) {
+                    Log.d(TAG, "registerProblemInAPI JSONException - " + e.getMessage());
+                }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 prgDialog.hide();
                 if (statusCode == 404) {
                     Log.d(TAG, "registerProblem - Requested resource not found (http " + statusCode + ")");

@@ -43,7 +43,11 @@ public class UserProblemActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
+    RecyclerView.LayoutManager layoutManager;
+
     private SharedPreferences sharedPreferences;
+
+    private UserProblemAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,7 @@ public class UserProblemActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_user_problem);
         initComponents();
+        loadUserProblems();
     }
 
     @Override
@@ -63,8 +68,6 @@ public class UserProblemActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-
-        loadUserProblems();
     }
 
     @Override
@@ -92,8 +95,12 @@ public class UserProblemActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.userProblemList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        mAdapter = new UserProblemAdapter();
+
+        recyclerView.setAdapter(mAdapter);
 
         sharedPreferences = this.getSharedPreferences(MainActivity.class.getCanonicalName(), Context.MODE_PRIVATE);
     }
@@ -108,13 +115,10 @@ public class UserProblemActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult");
         if(resultCode == RESULT_OK){
             if (requestCode == ACTION_REGISTER_PROBLEM) {
-                String message = data.getStringExtra(CriarProActivity.EXTRA_MESSAGE_REGISTER);
-                if (!message.isEmpty()) {
-                    CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.userProblemCoordinatorLayout);
-                    Snackbar.make(coordinatorLayout,message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                }
+                updateProblemUserList(data);
             }
         }
     }
@@ -125,7 +129,6 @@ public class UserProblemActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    ArrayList<Problem> mDataset = new ArrayList<>();
                     JSONArray jsonArray = response.getJSONArray("problems");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonProblem = jsonArray.getJSONObject(i);
@@ -134,14 +137,13 @@ public class UserProblemActivity extends AppCompatActivity {
                         problem.setTitle(jsonProblem.getString("title"));
 
                         String data = jsonProblem.getString("date");
-                        SimpleDateFormat  formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         problem.setPostDate(new Date(formatter.parse(data).getTime()));
 
                         problem.setDescription(jsonProblem.getString("description"));
 
-                        mDataset.add(problem);
+                        mAdapter.add(i, problem);
                     }
-                    recyclerView.setAdapter(new UserProblemAdapter(mDataset));
                 } catch (JSONException e) {
                     Log.d(TAG, "loadUserProblems JSONException - " + e.getMessage());
                 } catch (ParseException e) {
@@ -154,5 +156,40 @@ public class UserProblemActivity extends AppCompatActivity {
                 Log.d(TAG, "loadUserProblems Request Error");
             }
         });
+    }
+
+    private void updateProblemUserList(Intent data) {
+        String message = data.getStringExtra(CriarProActivity.EXTRA_MESSAGE_REGISTER);
+        int problemId = data.getIntExtra(CriarProActivity.EXTRA_MESSAGE_PROBLEM_ID, -1);
+
+        RestClient.get(getString(R.string.api_url) + "/problem/read/" + problemId, null, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Problem problem = new Problem();
+                try {
+                    problem.setTitle(response.getString("title"));
+
+                    String data = response.getString("date");
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    problem.setPostDate(new Date(formatter.parse(data).getTime()));
+
+                    problem.setDescription(response.getString("description"));
+
+                    mAdapter.add(0, problem);
+                } catch (JSONException e) {
+                    Log.d(TAG, "updateProblemUserList JSONException - " + e.getMessage());
+                } catch (ParseException e) {
+                    Log.d(TAG, "updateProblemUserList ParseException - " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d(TAG, "updateProblemUserList Request Error");
+            }
+        });
+
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.userProblemCoordinatorLayout);
+        Snackbar.make(coordinatorLayout,message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 }
