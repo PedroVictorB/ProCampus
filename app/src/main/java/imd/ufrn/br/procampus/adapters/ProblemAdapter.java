@@ -76,6 +76,8 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
         return mDataset.size();
     }
 
+    public boolean isEmpty() { return mDataset.isEmpty(); };
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView userImage;
         public TextView username;

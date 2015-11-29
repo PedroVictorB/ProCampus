@@ -58,6 +58,8 @@ public class UserProblemAdapter extends RecyclerView.Adapter<UserProblemAdapter.
         return mDataset.size();
     }
 
+    public boolean isEmpty() { return mDataset.isEmpty(); };
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView problemTitle;
         public TextView postDate;

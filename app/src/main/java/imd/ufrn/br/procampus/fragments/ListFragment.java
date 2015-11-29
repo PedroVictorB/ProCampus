@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
@@ -63,6 +64,8 @@ public class ListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private TextView problemListMessage;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -97,8 +100,7 @@ public class ListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
@@ -157,6 +159,8 @@ public class ListFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
+        problemListMessage = (TextView) view.findViewById(R.id.problemListMessage);
+
         prgDialog = new ProgressDialog(getActivity());
         prgDialog.setMessage("Carregando...");
 
@@ -191,6 +195,7 @@ public class ListFragment extends Fragment {
 
                         mAdapter.add(i, problem);
                     }
+                    verifyListState();
                     prgDialog.hide();
                 } catch (JSONException e) {
                     Log.d(TAG, "loadUserProblems JSONException - " + e.getMessage());
@@ -209,5 +214,16 @@ public class ListFragment extends Fragment {
                 Log.d(TAG, "loadUserProblems Request Error (http " + statusCode + "): " + responseString);
             }
         });
+    }
+
+    private void verifyListState() {
+        if (mAdapter.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            problemListMessage.setVisibility(View.VISIBLE);
+        }
+        else {
+            recyclerView.setVisibility(View.VISIBLE);
+            problemListMessage.setVisibility(View.GONE);
+        }
     }
 }

@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -51,6 +52,8 @@ public class UserProblemActivity extends AppCompatActivity {
     private UserProblemAdapter mAdapter;
 
     private ProgressDialog prgDialog;
+
+    private TextView userProblemListMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +103,8 @@ public class UserProblemActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.userProblemList);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        userProblemListMessage = (TextView) findViewById(R.id.userProblemListMessage);
 
         prgDialog = new ProgressDialog(this);
         prgDialog.setMessage("Carregando...");
@@ -151,6 +156,7 @@ public class UserProblemActivity extends AppCompatActivity {
 
                         mAdapter.add(i, problem);
                     }
+                    verifyListState();
                     prgDialog.hide();
                 } catch (JSONException e) {
                     Log.d(TAG, "loadUserProblems JSONException - " + e.getMessage());
@@ -170,7 +176,7 @@ public class UserProblemActivity extends AppCompatActivity {
         String message = data.getStringExtra(CriarProActivity.EXTRA_MESSAGE_REGISTER);
         int problemId = data.getIntExtra(CriarProActivity.EXTRA_MESSAGE_PROBLEM_ID, -1);
 
-        RestClient.get(getString(R.string.api_url) + "/problem/read/" + problemId, null, new JsonHttpResponseHandler(){
+        RestClient.get(getString(R.string.api_url) + "/problem/read/" + problemId, null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Problem problem = new Problem();
@@ -199,5 +205,16 @@ public class UserProblemActivity extends AppCompatActivity {
 
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.userProblemCoordinatorLayout);
         Snackbar.make(coordinatorLayout,message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+
+    private void verifyListState() {
+        if (mAdapter.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            userProblemListMessage.setVisibility(View.VISIBLE);
+        }
+        else {
+            recyclerView.setVisibility(View.VISIBLE);
+            userProblemListMessage.setVisibility(View.GONE);
+        }
     }
 }
