@@ -69,10 +69,13 @@ public class CriarProActivity extends AppCompatActivity {
     private TextInputLayout fieldDescriptionLayout;
     private TextInputLayout fieldRegisterLocalLayout;
 
+    private ImageView fieldImage;
+
     private ProgressDialog prgDialog;
 
     private double latitude;
     private double longitude;
+    private String imagePath;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -115,11 +118,15 @@ public class CriarProActivity extends AppCompatActivity {
         fieldDescriptionLayout = (TextInputLayout) findViewById(R.id.fieldRegisterDescriptionLayout);
         fieldRegisterLocalLayout = (TextInputLayout) findViewById(R.id.fieldRegisterLocalLayout);
 
+        fieldImage = (ImageView) findViewById(R.id.problemRegisterImage);
+
         prgDialog = new ProgressDialog(this);
         prgDialog.setMessage("Registrando problema...");
 
         sharedPreferences = this.getSharedPreferences(MainActivity.class.getCanonicalName(), Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+
+        imagePath = "";
     }
 
     public void onClickHandler(View view) {
@@ -147,7 +154,13 @@ public class CriarProActivity extends AppCompatActivity {
             params.put("latitude", latitude);
             params.put("longitude", longitude);
             params.put("user", sharedPreferences.getString("proCampusUserId", ""));
-            registerProblemInAPI(params);
+            try {
+                params.put("image", new File(imagePath));
+                registerProblemInAPI(params);
+            } catch (FileNotFoundException e) {
+                Log.d(TAG, "registerProblem FileNotFoundException");
+            }
+
         }
     }
 
@@ -160,6 +173,7 @@ public class CriarProActivity extends AppCompatActivity {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
                 File destination = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
+                imagePath = destination.getAbsolutePath();
                 FileOutputStream fo;
                 try {
                     destination.createNewFile();
@@ -175,6 +189,7 @@ public class CriarProActivity extends AppCompatActivity {
                 ((ImageView) findViewById(R.id.problemRegisterImage)).setImageBitmap(thumbnail);
             } else if (requestCode == ACTION_SELECT_FILE) {
                 Uri selectedImageUri = data.getData();
+                imagePath = getRealPathFromURI(this, selectedImageUri);
                 String[] projection = {MediaStore.MediaColumns.DATA};
                 Cursor cursor = managedQuery(selectedImageUri, projection, null, null,
                         null);
@@ -299,6 +314,21 @@ public class CriarProActivity extends AppCompatActivity {
             fieldRegisterLocalLayout.setError(getString(R.string.register_problem_error_msg));
         }
         return true;
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 }
 
