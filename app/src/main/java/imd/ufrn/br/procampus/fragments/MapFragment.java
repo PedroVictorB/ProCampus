@@ -2,6 +2,7 @@ package imd.ufrn.br.procampus.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,13 +29,24 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.maps.android.PolyUtil;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import cz.msebera.android.httpclient.Header;
 import imd.ufrn.br.procampus.activities.CriarProActivity;
 import imd.ufrn.br.procampus.activities.InfoActivity;
 import imd.ufrn.br.procampus.R;
+import imd.ufrn.br.procampus.entities.Problem;
+import imd.ufrn.br.procampus.entities.User;
+import imd.ufrn.br.procampus.utils.RestClient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,8 +102,6 @@ public class MapFragment extends Fragment
     private boolean pedindoLocalizacao = false;
 
 
-
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -123,8 +134,7 @@ public class MapFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
@@ -216,9 +226,6 @@ public class MapFragment extends Fragment
 
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngUFRN, 17));//Posição inicial da camera na UFRN com zoom 17.
 
-        //Desmarcar o comentário abaixo para ver a área que os marcadores podem ser colocados.
-        //googleMap.addPolygon(areaMarcadoresUFRN).setFillColor(Color.BLUE);
-
         //Listener para mudanças de posição da camera.
         googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
@@ -239,28 +246,7 @@ public class MapFragment extends Fragment
             }
         });
 
-        //Adicionar marcador quando o usúario clica no mapa
-        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                if (PolyUtil.containsLocation(latLng, areaMarcadoresUFRN.getPoints(), true)) {
-                    //salvarEmArquivo("Localização do marcador: \n" + "Latitude: "+latLng.latitude+"\nLongitude: "+latLng.longitude+"\n\n");
-                    googleMap.addMarker(new MarkerOptions().title("TESTE").position(latLng));
-                    Intent i = new Intent(getActivity(), CriarProActivity.class);
-                    i.putExtra("position", latLng);
-                    startActivityForResult(i, 1);
-                }
-            }
-        });
-
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Intent i = new Intent(getActivity(), InfoActivity.class);
-                startActivity(i);
-                return true;
-            }
-        });
+        loadMarkers();
     }
 
     /**
@@ -394,4 +380,34 @@ public class MapFragment extends Fragment
         );
     }
 
+    private void loadMarkers() {
+        RestClient.get(getString(R.string.api_url) + "problem/readAll", null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("problems");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonProblem = jsonArray.getJSONObject(i);
+                        String latitude = jsonProblem.getString("latitude");
+                        String longitude = jsonProblem.getString("longitude");
+                        googleMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)))
+                                .title(jsonProblem.getString("title")));
+                    }
+                } catch (JSONException e) {
+                    Log.d(TAG, "loadUserProblems JSONException - " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d(TAG, "loadUserProblems Request Error (http " + statusCode + ")");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d(TAG, "loadUserProblems Request Error (http " + statusCode + "): " + responseString);
+            }
+        });
+    }
 }
