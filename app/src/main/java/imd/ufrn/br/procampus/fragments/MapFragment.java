@@ -1,8 +1,6 @@
 package imd.ufrn.br.procampus.fragments;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,10 +22,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.maps.android.PolyUtil;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -36,16 +31,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
-import imd.ufrn.br.procampus.activities.CriarProActivity;
-import imd.ufrn.br.procampus.activities.InfoActivity;
 import imd.ufrn.br.procampus.R;
-import imd.ufrn.br.procampus.entities.Problem;
-import imd.ufrn.br.procampus.entities.User;
 import imd.ufrn.br.procampus.utils.RestClient;
 
 /**

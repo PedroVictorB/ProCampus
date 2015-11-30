@@ -2,6 +2,7 @@ package imd.ufrn.br.procampus.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,9 +11,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
@@ -28,10 +31,12 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import imd.ufrn.br.procampus.R;
+import imd.ufrn.br.procampus.activities.ProblemDetailsActivity;
 import imd.ufrn.br.procampus.adapters.ProblemAdapter;
 import imd.ufrn.br.procampus.adapters.UserProblemAdapter;
 import imd.ufrn.br.procampus.entities.Problem;
 import imd.ufrn.br.procampus.entities.User;
+import imd.ufrn.br.procampus.utils.RecyclerItemClickListener;
 import imd.ufrn.br.procampus.utils.RestClient;
 
 /**
@@ -167,6 +172,21 @@ public class ListFragment extends Fragment {
         mAdapter = new ProblemAdapter(getActivity());
 
         recyclerView.setAdapter(mAdapter);
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent intent = new Intent(getActivity(), ProblemDetailsActivity.class);
+                        intent.putExtra("problemId", mAdapter.getDataSet().get(position).getId());
+                        startActivity(intent);
+                    }
+                })
+        );
+    }
+
+    public void onClickHandler(View view) {
+        int id = view.getId();
     }
 
     private void loadProblems () {
@@ -180,6 +200,7 @@ public class ListFragment extends Fragment {
                         JSONObject jsonProblem = jsonArray.getJSONObject(i);
 
                         Problem problem = new Problem();
+                        problem.setId(jsonProblem.getInt("id"));
                         problem.setTitle(jsonProblem.getString("title"));
 
                         String data = jsonProblem.getString("date");

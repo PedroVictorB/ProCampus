@@ -54,6 +54,7 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
     public void onBindViewHolder(ProblemAdapter.ViewHolder holder, int position) {
         holder.userImage.setImageBitmap(mDataset.get(position).getUser().getImage());
         holder.username.setText(mDataset.get(position).getUser().getName());
+        holder.problemId.setText(mDataset.get(position).getId() + "");
         holder.problemTitle.setText(mDataset.get(position).getTitle());
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -78,9 +79,14 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
 
     public boolean isEmpty() { return mDataset.isEmpty(); };
 
+    public List<Problem> getDataSet() {
+        return mDataset;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView userImage;
         public TextView username;
+        public TextView problemId;
         public TextView problemTitle;
         public TextView postDate;
         public ImageView hasImage;
@@ -92,6 +98,7 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
 
             userImage = (ImageView) itemView.findViewById(R.id.userImage);
             username = (TextView) itemView.findViewById(R.id.username);
+            problemId = (TextView) itemView.findViewById(R.id.problemId);
             problemTitle = (TextView) itemView.findViewById(R.id.problemTitle);
             postDate = (TextView) itemView.findViewById(R.id.postDate);
             hasImage = (ImageView) itemView.findViewById(R.id.hasImage);
