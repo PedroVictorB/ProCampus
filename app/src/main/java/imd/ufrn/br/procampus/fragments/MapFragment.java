@@ -225,8 +225,8 @@ public class MapFragment extends Fragment
         googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                if (cameraPosition.zoom < 17) {
-                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+                if (cameraPosition.zoom < 10) {
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(10));
                 }
                 areaPermitida(latLngBoundsUFRN, cameraPosition);
             }
