@@ -213,7 +213,10 @@ public class MapFragment extends Fragment
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         googleMap.setMyLocationEnabled(true);
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngUFRN, 17));//Posição inicial da camera na UFRN com zoom 17.
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLngUFRN));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+
+        //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngUFRN, 17));//Posição inicial da camera na UFRN com zoom 17.
 
         //Listener para mudanças de posição da camera.
         googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
