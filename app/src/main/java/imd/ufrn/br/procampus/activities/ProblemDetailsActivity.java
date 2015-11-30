@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +33,8 @@ public class ProblemDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = ProblemDetailsActivity.class.getSimpleName();
 
+    private View viewGroup;
+
     private TextView viewUsername;
     private TextView viewTitle;
     private TextView viewPostDate;
@@ -54,6 +57,9 @@ public class ProblemDetailsActivity extends AppCompatActivity {
     }
 
     private void initComponents() {
+
+        viewGroup = findViewById(R.id.problemDetailsViewGroup);
+
         viewUsername = (TextView) findViewById(R.id.detailsUsername);
         viewTitle = (TextView) findViewById(R.id.detailsProblemTitle);
         viewPostDate = (TextView) findViewById(R.id.detailsPostDate);
@@ -91,6 +97,7 @@ public class ProblemDetailsActivity extends AppCompatActivity {
                     String image64 = response.getString("image");
                     byte[] imageAsBytes = Base64.decode(image64.getBytes(), Base64.DEFAULT);
                     viewImage.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
+                    viewGroup.setVisibility(View.VISIBLE);
                     prgDialog.hide();
                 } catch (JSONException e) {
                     Log.d(TAG, "loadUserProblems JSONException - " + e.getMessage());
