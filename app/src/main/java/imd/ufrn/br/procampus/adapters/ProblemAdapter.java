@@ -83,6 +83,17 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
         return mDataset;
     }
 
+    public void clearData() {
+        int size = this.mDataset.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                this.mDataset.remove(0);
+            }
+
+            this.notifyItemRangeRemoved(0, size);
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView userImage;
         public TextView username;

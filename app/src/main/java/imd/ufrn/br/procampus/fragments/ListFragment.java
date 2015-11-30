@@ -166,12 +166,11 @@ public class ListFragment extends Fragment {
 
         problemListMessage = (TextView) view.findViewById(R.id.problemListMessage);
 
+        mAdapter = new ProblemAdapter(getActivity());
+        recyclerView.setAdapter(mAdapter);
+
         prgDialog = new ProgressDialog(getActivity());
         prgDialog.setMessage("Carregando...");
-
-        mAdapter = new ProblemAdapter(getActivity());
-
-        recyclerView.setAdapter(mAdapter);
 
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
@@ -199,6 +198,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
+                    mAdapter.clearData();
                     JSONArray jsonArray = response.getJSONArray("problems");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonProblem = jsonArray.getJSONObject(i);
