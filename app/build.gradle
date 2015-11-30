@@ -10,6 +10,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -49,4 +50,6 @@ dependencies {
     compile 'com.rockerhieu:rv-adapter-states:1.0'
 
     compile 'com.andkulikov:transitionseverywhere:1.6.1'
+
+    compile 'com.android.support:multidex:1.0.0'
 }
