@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import imd.ufrn.br.procampus.R;
@@ -20,10 +21,18 @@ import imd.ufrn.br.procampus.entities.Problem;
 public class UserProblemAdapter extends RecyclerView.Adapter<UserProblemAdapter.ViewHolder> {
     private List<Problem> mDataset;
 
+    public UserProblemAdapter () {
+        mDataset = new ArrayList<Problem>();
+    }
+
     public UserProblemAdapter (List<Problem> problems) {
         mDataset = problems;
     }
 
+    public void add(int position, Problem problem) {
+        mDataset.add(position, problem);
+        notifyItemInserted(position);
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -36,8 +45,8 @@ public class UserProblemAdapter extends RecyclerView.Adapter<UserProblemAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.problemTitle.setText(mDataset.get(position).getTitle());
 
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String date = dateFormat.format(mDataset.get(position).getPostDate());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String date = formatter.format(mDataset.get(position).getPostDate());
         holder.postDate.setText(date);
 
         holder.numberOfComments.setText("5");
@@ -48,6 +57,8 @@ public class UserProblemAdapter extends RecyclerView.Adapter<UserProblemAdapter.
     public int getItemCount() {
         return mDataset.size();
     }
+
+    public boolean isEmpty() { return mDataset.isEmpty(); };
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView problemTitle;

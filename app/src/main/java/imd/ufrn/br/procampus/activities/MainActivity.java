@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity
         if (intent.getBooleanExtra("login_pressed", false)) {
             getUserInformation();
         }
-
     }
 
     private void initComponents() {

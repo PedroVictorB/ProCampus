@@ -30,7 +30,11 @@ import android.widget.ImageView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,6 +55,7 @@ public class CriarProActivity extends AppCompatActivity {
     private static final int ACTION_REQUEST_LOCAL = 2;
 
     public static final String EXTRA_MESSAGE_REGISTER = CriarProActivity.class.getSimpleName() + ".EXTRA_MESSAGE_REGISTER";
+    public static final String EXTRA_MESSAGE_PROBLEM_ID = CriarProActivity.class.getSimpleName() + ".EXTRA_MESSAGE_PROBLEM_ID";
 
     private CoordinatorLayout coordinatorLayout;
 
@@ -64,10 +69,13 @@ public class CriarProActivity extends AppCompatActivity {
     private TextInputLayout fieldDescriptionLayout;
     private TextInputLayout fieldRegisterLocalLayout;
 
+    private ImageView fieldImage;
+
     private ProgressDialog prgDialog;
 
     private double latitude;
     private double longitude;
+    private String imagePath;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -110,11 +118,15 @@ public class CriarProActivity extends AppCompatActivity {
         fieldDescriptionLayout = (TextInputLayout) findViewById(R.id.fieldRegisterDescriptionLayout);
         fieldRegisterLocalLayout = (TextInputLayout) findViewById(R.id.fieldRegisterLocalLayout);
 
+        fieldImage = (ImageView) findViewById(R.id.problemRegisterImage);
+
         prgDialog = new ProgressDialog(this);
-        prgDialog.setMessage("Registrand problema...");
+        prgDialog.setMessage("Registrando problema...");
 
         sharedPreferences = this.getSharedPreferences(MainActivity.class.getCanonicalName(), Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+
+        imagePath = "";
     }
 
     public void onClickHandler(View view) {
@@ -142,7 +154,13 @@ public class CriarProActivity extends AppCompatActivity {
             params.put("latitude", latitude);
             params.put("longitude", longitude);
             params.put("user", sharedPreferences.getString("proCampusUserId", ""));
-            registerProblem(params);
+            try {
+                params.put("image", new File(imagePath));
+                registerProblemInAPI(params);
+            } catch (FileNotFoundException e) {
+                Log.d(TAG, "registerProblem FileNotFoundException");
+            }
+
         }
     }
 
@@ -155,6 +173,7 @@ public class CriarProActivity extends AppCompatActivity {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
                 File destination = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
+                imagePath = destination.getAbsolutePath();
                 FileOutputStream fo;
                 try {
                     destination.createNewFile();
@@ -170,6 +189,7 @@ public class CriarProActivity extends AppCompatActivity {
                 ((ImageView) findViewById(R.id.problemRegisterImage)).setImageBitmap(thumbnail);
             } else if (requestCode == ACTION_SELECT_FILE) {
                 Uri selectedImageUri = data.getData();
+                imagePath = getRealPathFromURI(this, selectedImageUri);
                 String[] projection = {MediaStore.MediaColumns.DATA};
                 Cursor cursor = managedQuery(selectedImageUri, projection, null, null,
                         null);
@@ -235,20 +255,26 @@ public class CriarProActivity extends AppCompatActivity {
         }
     }
 
-    public void registerProblem(RequestParams params){
+    public void registerProblemInAPI(RequestParams params){
         prgDialog.show();
-        RestClient.post(getString(R.string.api_url) + "/problem/create", params, new AsyncHttpResponseHandler() {
+        RestClient.post(getString(R.string.api_url) + "/problem/create", params, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 prgDialog.hide();
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_MESSAGE_REGISTER, getString(R.string.register_problem_success_msg));
-                setResult(RESULT_OK, intent);
-                finish();
+
+                try {
+                    intent.putExtra(EXTRA_MESSAGE_REGISTER, getString(R.string.register_problem_success_msg));
+                    intent.putExtra(EXTRA_MESSAGE_PROBLEM_ID, response.getInt("id"));
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } catch (JSONException e) {
+                    Log.d(TAG, "registerProblemInAPI JSONException - " + e.getMessage());
+                }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 prgDialog.hide();
                 if (statusCode == 404) {
                     Log.d(TAG, "registerProblem - Requested resource not found (http " + statusCode + ")");
@@ -288,6 +314,21 @@ public class CriarProActivity extends AppCompatActivity {
             fieldRegisterLocalLayout.setError(getString(R.string.register_problem_error_msg));
         }
         return true;
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 }
 

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import imd.ufrn.br.procampus.R;
@@ -27,9 +28,19 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
     private List<Problem> mDataset;
     private Context context;
 
+    public ProblemAdapter(Context context) {
+        this.context = context;
+        mDataset = new ArrayList<Problem>();
+    }
+
     public ProblemAdapter (Context context, List<Problem> problems) {
         this.context = context;
         mDataset = problems;
+    }
+
+    public void add(int position, Problem problem) {
+        mDataset.add(position, problem);
+        notifyItemInserted(position);
     }
 
     @Override
@@ -43,11 +54,12 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
     public void onBindViewHolder(ProblemAdapter.ViewHolder holder, int position) {
         holder.userImage.setImageBitmap(mDataset.get(position).getUser().getImage());
         holder.username.setText(mDataset.get(position).getUser().getName());
+        holder.problemId.setText(mDataset.get(position).getId() + "");
         holder.problemTitle.setText(mDataset.get(position).getTitle());
 
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String date = dateFormat.format(mDataset.get(position).getPostDate());
-        holder.postDate.setText(date);
+        //DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        //String date = dateFormat.format(mDataset.get(position).getPostDate());
+        holder.postDate.setText(mDataset.get(position).getPostDateString());
 
         if (mDataset.get(position).getImage() == null) {
             holder.hasImage.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_grey600_24dp));
@@ -65,9 +77,16 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
         return mDataset.size();
     }
 
+    public boolean isEmpty() { return mDataset.isEmpty(); };
+
+    public List<Problem> getDataSet() {
+        return mDataset;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView userImage;
         public TextView username;
+        public TextView problemId;
         public TextView problemTitle;
         public TextView postDate;
         public ImageView hasImage;
@@ -79,6 +98,7 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
 
             userImage = (ImageView) itemView.findViewById(R.id.userImage);
             username = (TextView) itemView.findViewById(R.id.username);
+            problemId = (TextView) itemView.findViewById(R.id.problemId);
             problemTitle = (TextView) itemView.findViewById(R.id.problemTitle);
             postDate = (TextView) itemView.findViewById(R.id.postDate);
             hasImage = (ImageView) itemView.findViewById(R.id.hasImage);

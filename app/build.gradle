@@ -10,6 +10,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -22,12 +23,18 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.2.1'
+
+    //Google services
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.google.maps.android:android-maps-utils:0.4'
+
+    //Material Design
     compile 'com.android.support:design:22.2.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.android.support:cardview-v7:22.2.1'
     compile 'com.balysv:material-ripple:1.0.2'
+
+    //Image utils
     compile 'de.hdodenhof:circleimageview:2.0.0'
 
     //Oauth dependences
@@ -38,4 +45,11 @@ dependencies {
 
     //Http client
     compile 'com.loopj.android:android-async-http:1.4.9'
+
+    //List utils
+    compile 'com.rockerhieu:rv-adapter-states:1.0'
+
+    compile 'com.andkulikov:transitionseverywhere:1.6.1'
+
+    compile 'com.android.support:multidex:1.0.0'
 }
