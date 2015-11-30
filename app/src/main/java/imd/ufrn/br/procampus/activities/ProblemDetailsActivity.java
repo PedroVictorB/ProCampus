@@ -50,7 +50,7 @@ public class ProblemDetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        loadProblemDetails(intent.getIntExtra("problemId", -1));
+        loadProblemDetails(intent);
     }
 
     private void initComponents() {
@@ -65,23 +65,27 @@ public class ProblemDetailsActivity extends AppCompatActivity {
         prgDialog.setMessage("Carregando...");
     }
 
-    private void loadProblemDetails(int problemId) {
+    private void loadProblemDetails(final Intent intent) {
         prgDialog.show();
+
+        int problemId = intent.getIntExtra("problemId", -1);
         RestClient.get(getString(R.string.api_url) + "/problem/read/" + problemId, null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    viewUsername.setText(response.getString("user"));
-                    viewTitle.setText(response.getString("title"));
+                    viewUsername.setText(intent.getStringExtra("user"));
+                    viewTitle.setText(intent.getStringExtra("problemTitle"));
 
+                    /*
                     String data = response.getString("date");
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                     java.sql.Date date = new Date(formatter.parse(data).getTime());
                     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     String finalDate = dateFormat.format(date);
-                    viewPostDate.setText(finalDate);
+                    */
+                    viewPostDate.setText(intent.getStringExtra("problemPostDate"));
 
-                    viewDescription.setText(response.getString("description"));
+                    viewDescription.setText(intent.getStringExtra("problemDescription"));
                     viewNumberOfComments.setText("0");
 
                     String image64 = response.getString("image");
@@ -90,8 +94,6 @@ public class ProblemDetailsActivity extends AppCompatActivity {
                     prgDialog.hide();
                 } catch (JSONException e) {
                     Log.d(TAG, "loadUserProblems JSONException - " + e.getMessage());
-                } catch (ParseException e) {
-                    Log.d(TAG, "loadUserProblems ParseException - " + e.getMessage());
                 }
             }
 

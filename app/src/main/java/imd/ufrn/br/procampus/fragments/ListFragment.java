@@ -179,6 +179,10 @@ public class ListFragment extends Fragment {
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getActivity(), ProblemDetailsActivity.class);
                         intent.putExtra("problemId", mAdapter.getDataSet().get(position).getId());
+                        intent.putExtra("user", mAdapter.getDataSet().get(position).getUser().getName());
+                        intent.putExtra("problemTitle", mAdapter.getDataSet().get(position).getTitle());
+                        intent.putExtra("problemDescription", mAdapter.getDataSet().get(position).getDescription());
+                        intent.putExtra("problemPostDate", mAdapter.getDataSet().get(position).getPostDateString());
                         startActivity(intent);
                     }
                 })

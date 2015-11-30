@@ -3,6 +3,8 @@ package imd.ufrn.br.procampus.entities;
 import android.graphics.Bitmap;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by brunomoreira on 22/11/2015.
@@ -88,5 +90,10 @@ public class Problem {
 
     public void setPostDate(Date postDate) {
         this.postDate = postDate;
+    }
+
+    public String getPostDateString() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return dateFormat.format(postDate);
     }
 }

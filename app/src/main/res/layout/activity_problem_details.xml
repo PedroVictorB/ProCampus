@@ -34,24 +34,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="9dp">
 
                     <TextView
                         android:id="@+id/detailsUsername"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Brunno Moreira"
+                        android:text="Carregando..."
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
-                        android:textSize="10pt"/>
+                        android:layout_marginLeft="8dp"
+                        android:textSize="7pt"/>
 
                     <TextView
                         android:id="@+id/detailsPostDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="18/04/2015"
+                        android:text="Carregando..."
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="7dp"/>
 
                 </LinearLayout>
 
@@ -61,10 +61,10 @@
                 android:id="@+id/detailsProblemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Buraco em frente a reitoria"
+                android:text="Carregando..."
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="5dp"
-                android:textSize="9pt"/>
+                android:textSize="8pt"/>
 
             <ImageView
                 android:id="@+id/detailsProblemImage"
@@ -77,7 +77,7 @@
                 android:id="@+id/detailsProblemDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Aliquam vitae imperdiet erat. Curabitur dolor sapien, feugiat a dignissim a, scelerisque a nibh. Vivamus nec venenatis tortor. Vivamus sapien nunc, accumsan ac convallis efficitur, "
+                android:text="Carregando..."
                 android:layout_marginTop="10dp"/>
 
             <LinearLayout

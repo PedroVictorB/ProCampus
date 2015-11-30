@@ -57,9 +57,9 @@ public class ProblemAdapter extends RecyclerView.Adapter<ProblemAdapter.ViewHold
         holder.problemId.setText(mDataset.get(position).getId() + "");
         holder.problemTitle.setText(mDataset.get(position).getTitle());
 
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String date = dateFormat.format(mDataset.get(position).getPostDate());
-        holder.postDate.setText(date);
+        //DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        //String date = dateFormat.format(mDataset.get(position).getPostDate());
+        holder.postDate.setText(mDataset.get(position).getPostDateString());
 
         if (mDataset.get(position).getImage() == null) {
             holder.hasImage.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_grey600_24dp));
