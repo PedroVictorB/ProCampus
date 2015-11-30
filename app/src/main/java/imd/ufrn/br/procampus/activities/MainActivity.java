@@ -80,15 +80,6 @@ public class MainActivity extends AppCompatActivity
         if (intent.getBooleanExtra("login_pressed", false)) {
             getUserInformation();
         }
-
-        editor.putBoolean("user_logged", true);
-        editor.putString("nome", "BRUNNO MOREIRA DA SILVA");
-        editor.putString("login", "brunomoreira");
-        editor.putString("proCampusUserId", "1");
-        editor.putBoolean("hasProCampusUser", true);
-        editor.commit();
-        changeUserInterface();
-
     }
 
     private void initComponents() {
@@ -220,9 +211,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void authenticate() {
-        //Intent intent = new Intent(this, MainActivity.class);
-        //intent.putExtra("login_pressed", true);
-        //OAuthTokenRequest.getInstance().getTokenCredential(this, getString(R.string.sigaa_api_base_url) + "authz-server", getString(R.string.sigaa_client_id), getString(R.string.sigaa_client_secret), intent);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("login_pressed", true);
+        OAuthTokenRequest.getInstance().getTokenCredential(this, getString(R.string.sigaa_api_base_url) + "authz-server", getString(R.string.sigaa_client_id), getString(R.string.sigaa_client_secret), intent);
     }
 
     private void getUserInformation() {
