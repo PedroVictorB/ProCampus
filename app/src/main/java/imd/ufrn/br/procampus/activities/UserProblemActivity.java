@@ -137,7 +137,7 @@ public class UserProblemActivity extends AppCompatActivity {
     private void loadUserProblems () {
         prgDialog.show();
         String userId = sharedPreferences.getString("proCampusUserId", "");
-        RestClient.get(getString(R.string.api_url) + "/problem/user/" + userId, null, new JsonHttpResponseHandler() {
+        RestClient.get(getString(R.string.api_url) + "/problem/userNoImg/" + userId, null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {

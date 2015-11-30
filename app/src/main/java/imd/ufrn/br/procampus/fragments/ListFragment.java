@@ -191,7 +191,7 @@ public class ListFragment extends Fragment {
 
     private void loadProblems () {
         prgDialog.show();
-        RestClient.get(getString(R.string.api_url) + "/problem/readAll", null, new JsonHttpResponseHandler() {
+        RestClient.get(getString(R.string.api_url) + "/problem/readAllNoImg", null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
