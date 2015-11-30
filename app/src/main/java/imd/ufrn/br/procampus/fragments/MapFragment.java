@@ -602,5 +602,6 @@ public class MapFragment extends Fragment
                 .addHole(verticesHole)
                 .strokeColor(Color.RED)
                 .fillColor(Color.GRAY));
+        polygon.setStrokeWidth(0);
     }
 }
